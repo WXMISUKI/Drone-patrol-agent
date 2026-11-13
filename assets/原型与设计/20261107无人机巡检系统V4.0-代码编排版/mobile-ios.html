@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>现场端 iOS · 无人机工地巡视智能识别系统</title>
+<meta name="description" content="监理与施工安全员的现场端：任务、待复核隐患、整改上报与弱网缓存。">
+<link rel="stylesheet" href="prototype.css">
+</head>
+<body class="mobile-page">
+
+<div class="mobile-side">
+  <a class="ms-back" href="index.html">← 原型总览</a>
+  <div class="kicker" style="margin-top:18px">Field App · iOS</div>
+  <h2>现场端，<br>不是后台的缩小版。</h2>
+  <p>面向监理与施工安全员：看任务、收隐患、拍整改、查规范。弱网时先落本地，恢复后按幂等键补齐，不阻塞现场。</p>
+  <div class="ms-block">
+    <h3>本屏状态</h3>
+    <div class="ms-row"><span>当前用户</span><b>陈立群 · 监理</b></div>
+    <div class="ms-row"><span>待复核隐患</span><b>4 条 · 1 条重大</b></div>
+    <div class="ms-row"><span>整改待办</span><b>2 条</b></div>
+    <div class="ms-row"><span>弱网缓存</span><b>3 项待同步</b></div>
+    <div class="ms-row"><span>当前架次</span><b>YJ-06 · 67%</b></div>
+  </div>
+  <div class="ms-block">
+    <h3>演示要点</h3>
+    <div class="ms-row"><span>权限</span><b>仅本标段数据</b></div>
+    <div class="ms-row"><span>重大隐患</span><b>强制现场核实</b></div>
+    <div class="ms-row"><span>操作留痕</span><b>定位 + 时间戳</b></div>
+  </div>
+  <div class="ms-block">
+    <h3>其他界面</h3>
+    <div class="row" style="gap:6px;flex-wrap:wrap">
+      <a class="btn btn-sm" href="mobile-android.html">Android 版</a>
+      <a class="btn btn-sm" href="web-hazard-review.html">桌面复核台</a>
+    </div>
+  </div>
+</div>
+
+<div class="mobile-stage">
+  <div class="mobile-frame">
+    <div class="mobile-screen">
+      <div class="m-status"><span>9:41</span><span class="sig">●●● 5G ▮▮</span></div>
+
+      <div class="m-head">
+        <div>
+          <div class="m-title">现场巡检</div>
+          <div class="m-sub">03 标段 · 监理工程师 陈立群</div>
+        </div>
+        <span class="m-avatar">陈</span>
+      </div>
+
+      <div class="m-body">
+        <div class="m-hero">
+          <img src="assets/aerial-site.jpg" alt="右幅巡检任务航拍">
+          <div class="mh-k">YJ-20261107-06 · 执行中</div>
+          <div class="mh-t">右幅全域巡检</div>
+          <div class="mh-m">K12+200—K14+800 · M350 RTK · 已飞 24:18</div>
+          <div class="mh-p"><i style="width:67%"></i></div>
+        </div>
+
+        <div class="m-kpi mt-10">
+          <div><b>6<span style="font-size:10px;color:var(--muted-2)">/7</span></b><span>今日架次</span></div>
+          <div><b style="color:var(--red)">4</b><span>待复核隐患</span></div>
+          <div><b>2</b><span>整改待办</span></div>
+        </div>
+
+        <div class="m-section-title"><span>待我处理</span><a href="web-hazard-review.html">全部 6 条</a></div>
+        <div class="m-card">
+          <div class="m-list-item" style="padding:11px 12px;border-bottom:1px solid #EFEDE6">
+            <div class="m-thumb" style="position:relative">
+              <img src="assets/aerial-closeup.jpg" alt="临边防护缺失">
+              <span style="position:absolute;left:2px;top:2px;background:var(--red);color:#fff;font-size:7px;padding:0 3px">重大</span>
+            </div>
+            <div class="m-list-body">
+              <b>墩柱作业面临边防护栏杆缺失</b>
+              <span>K13+420 右幅 · 置信度 0.94 · 10:18</span>
+              <div class="row" style="gap:5px;margin-top:6px">
+                <a class="btn btn-sm btn-primary" href="web-hazard-review.html" style="height:24px;padding:0 8px;font-size:9.5px">立即复核</a>
+                <a class="btn btn-sm" href="#" style="height:24px;padding:0 8px;font-size:9.5px" data-toast="已标记为现场核实，稍后可在隐患列表继续。">现场核实</a>
+              </div>
+            </div>
+          </div>
+          <div class="m-list-item" style="padding:11px 12px;border-bottom:0">
+            <div class="m-thumb" style="position:relative">
+              <img src="assets/aerial-site.jpg" alt="基坑临边防护">
+              <span style="position:absolute;left:2px;top:2px;background:var(--amber);color:#fff;font-size:7px;padding:0 3px">待复核</span>
+            </div>
+            <div class="m-list-body">
+              <b>基坑临边防护已整改，待复核</b>
+              <span>K14+380 · 桥梁一队 · 09:12 提交</span>
+              <div class="row" style="gap:5px;margin-top:6px">
+                <a class="btn btn-sm btn-teal" href="web-hazard-closure.html" style="height:24px;padding:0 8px;font-size:9.5px">核对影像</a>
+                <span class="tag tag-teal" style="height:24px;display:inline-flex;align-items:center">资料齐全</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="m-section-title"><span>今日任务</span><a href="web-mission-detail.html">任务台账</a></div>
+        <div class="m-card">
+          <div class="m-task">
+            <div class="mt-row"><span class="mono" style="font-size:8px;color:var(--muted-2)">13:30</span><span class="mt-title">左幅重点区段巡视</span><span class="badge badge-draft" style="margin-left:auto">待起飞</span></div>
+            <div class="mt-meta"><span>K14+800—K17+200</span><span>机巢 B</span><span>21 min</span></div>
+          </div>
+          <div class="m-task">
+            <div class="mt-row"><span class="mono" style="font-size:8px;color:var(--muted-2)">09:08</span><span class="mt-title">右幅全域巡检</span><span class="badge badge-brand" style="margin-left:auto">67%</span></div>
+            <div class="mt-meta"><span>K12+200—K14+800</span><span>已采集 428 张</span></div>
+            <div class="mt-bar"><i style="width:67%"></i></div>
+          </div>
+          <div class="m-task">
+            <div class="mt-row"><span class="mono" style="font-size:8px;color:var(--muted-2)">08:15</span><span class="mt-title">取土场专项</span><span class="badge badge-closed" style="margin-left:auto">完成</span></div>
+            <div class="mt-meta"><span>3.2 km²</span><span>18 张</span></div>
+          </div>
+        </div>
+
+        <div class="m-section-title"><span>快捷操作</span></div>
+        <div class="m-actions">
+          <a class="m-action" href="#" data-toast="已打开整改取证：支持拍照、录像与定位水印。">
+            <span class="ma-ico">◉</span><span><b>整改取证</b><span>拍照 / 定位水印</span></span>
+          </a>
+          <a class="m-action" href="#" data-toast="已调用相机扫描设备二维码。">
+            <span class="ma-ico">▣</span><span><b>扫码核验</b><span>设备 / 桩号</span></span>
+          </a>
+          <a class="m-action" href="web-knowledge.html">
+            <span class="ma-ico">?</span><span><b>规范问答</b><span>强制引用来源</span></span>
+          </a>
+          <a class="m-action" href="#" data-toast="离线影像包已下载（最近 3 个架次，共 86 MB）。">
+            <span class="ma-ico">⇩</span><span><b>离线影像</b><span>3 架次 · 已缓存</span></span>
+          </a>
+        </div>
+
+        <div class="m-note">弱网缓存 3 项待同步 · 恢复后自动上传，重复提交按幂等键去重</div>
+        <div style="height:10px"></div>
+      </div>
+
+      <nav class="m-tabbar" aria-label="底部导航">
+        <a class="m-tab is-on" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1z"/></svg>
+          概览
+        </a>
+        <a class="m-tab" href="web-mission-detail.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>
+          任务
+        </a>
+        <a class="m-tab" href="web-hazard-review.html">
+          <span class="m-dot"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 2.8 19.5h18.4z"/><path d="M12 9v4.5M12 16.5v.2"/></svg>
+          隐患
+        </a>
+        <a class="m-tab" href="web-admin.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c.8-3.6 3.5-5.4 7-5.4s6.2 1.8 7 5.4"/></svg>
+          我的
+        </a>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script src="prototype.js"></script>
+</body>
+</html>

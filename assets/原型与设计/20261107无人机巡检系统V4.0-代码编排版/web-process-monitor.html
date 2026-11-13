@@ -1,0 +1,444 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>流程运行台 · 无人机工地巡视智能识别系统</title>
+<meta name="description" content="Supervisor 流程实例、状态机、Worker 调用链与审计追踪。">
+<link rel="stylesheet" href="prototype.css">
+<style>
+  .sm-wrap{overflow:auto;padding:4px 2px}
+  .sm-node rect{fill:#fff;stroke:var(--line-2);stroke-width:1}
+  .sm-node text{font-family:var(--font-ui);font-size:9.5px;fill:var(--muted);letter-spacing:.02em}
+  .sm-node .sm-t{font-size:10px;fill:var(--ink-2);font-weight:600;font-family:var(--font-mono);letter-spacing:0}
+  .sm-node.done rect{fill:var(--teal-soft);stroke:#7FB3A5}
+  .sm-node.done .sm-t{fill:#0F5A4D}
+  .sm-node.active rect{fill:var(--brand-soft);stroke:var(--brand);stroke-width:1.4}
+  .sm-node.active .sm-t{fill:var(--brand-dark)}
+  .sm-node.alt rect{fill:var(--surface-2);stroke:var(--line-2);stroke-dasharray:3 2}
+  .sm-edge{fill:none;stroke:var(--line-2);stroke-width:1.1;marker-end:url(#arrow)}
+  .sm-edge.hot{stroke:var(--brand)}
+  .sm-edge.dash{stroke-dasharray:4 3}
+  .sm-lbl{font-family:var(--font-ui);font-size:7.5px;fill:var(--muted-2)}
+  .sm-lbl.hot{fill:var(--brand-dark);font-weight:600}
+  .worker-card{padding:11px 12px;border:1px solid var(--line);border-radius:4px;background:var(--surface)}
+  .worker-card .wc-top{display:flex;align-items:center;gap:6px}
+  .worker-card .wc-name{font-size:11px;font-weight:600}
+  .worker-card .wc-metric{font-family:var(--font-num);font-size:19px;margin-top:5px;line-height:1}
+  .worker-card .wc-sub{font-size:9px;color:var(--muted-2);margin-top:4px}
+  .audit-row td{font-size:10px}
+</style>
+</head>
+<body class="app" data-role="supervisor">
+
+<aside class="sidebar">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
+        <path d="M8.4 8.4 5 5M15.6 8.4 19 5M8.4 15.6 5 19M15.6 15.6 19 19"/>
+        <rect x="8.6" y="8.6" width="6.8" height="6.8" rx="1.1"/>
+        <circle cx="4.6" cy="4.6" r="1.5"/><circle cx="19.4" cy="4.6" r="1.5"/>
+        <circle cx="4.6" cy="19.4" r="1.5"/><circle cx="19.4" cy="19.4" r="1.5"/>
+      </svg>
+    </span>
+    <span class="brand-text"><strong>无人机巡视智能体</strong><span>UAV INSPECTION OS · V4.0</span></span>
+  </a>
+  <div class="project-switch">
+    <span class="ps-icon"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 5.5 8 2l6 3.5v5L8 14l-6-3.5z"/><path d="M2 5.5 8 9l6-3.5M8 9v5"/></svg></span>
+    <span class="ps-text"><b>S32 公路改扩建工程</b><span>03 标段 · K12+200—K17+200</span></span>
+    <span class="ps-caret">▼</span>
+  </div>
+  <nav class="nav">
+    <div class="nav-label">巡视作业</div>
+    <a class="nav-item" id="nav-command" href="web-command-center.html"><span class="no">01</span>全域指挥台</a>
+    <a class="nav-item" id="nav-plan" href="web-mission-plan.html"><span class="no">02</span>任务与航线编排</a>
+    <a class="nav-item" id="nav-detail" href="web-mission-detail.html"><span class="no">03</span>飞行回放与影像</a>
+    <a class="nav-item" id="nav-review" href="web-hazard-review.html"><span class="no">04</span>AI 隐患复核<span class="nav-dot"></span></a>
+    <div class="nav-label">闭环与报告</div>
+    <a class="nav-item" id="nav-process" href="web-process-monitor.html"><span class="no">05</span>流程运行台<span class="nav-dot"></span></a>
+    <a class="nav-item" id="nav-closure" href="web-hazard-closure.html"><span class="no">06</span>整改闭环</a>
+    <a class="nav-item" id="nav-reports" href="web-reports.html"><span class="no">07</span>报告中心</a>
+    <div class="nav-label">智能支撑</div>
+    <a class="nav-item" id="nav-knowledge" href="web-knowledge.html"><span class="no">08</span>知识库与问答</a>
+    <a class="nav-item" id="nav-admin" href="web-admin.html"><span class="no">09</span>平台管理</a>
+  </nav>
+  <div class="side-foot">
+    <div class="sys-state"><span class="pulse"></span>Supervisor 正常 · 队列 0 积压</div>
+    <div class="side-user"><span class="avatar">陈</span><div><b>陈立群</b><span>监理工程师 · 03 标段</span></div></div>
+  </div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div class="crumb"><a href="index.html">原型总览</a><span class="sep">/</span><span>编排中枢</span><span class="sep">/</span><b>流程运行台</b></div>
+    <div class="topbar-right">
+      <label class="search"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="7" r="4.4"/><path d="m10.5 10.5 3 3"/></svg><input placeholder="搜索流程实例、任务编号"><kbd>⌘K</kbd></label>
+      <div class="role-switch"><button data-role-btn="supervisor" class="is-on">监理</button><button data-role-btn="owner">建设</button><button data-role-btn="builder">施工</button></div>
+      <button class="icon-btn" aria-label="通知"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 2a3.5 3.5 0 0 1 3.5 3.5c0 3 1.2 4 1.2 4H3.3s1.2-1 1.2-4A3.5 3.5 0 0 1 8 2Z"/><path d="M6.6 12a1.5 1.5 0 0 0 2.8 0"/></svg><span class="dot"></span></button>
+      <span class="avatar">陈</span>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="page-head">
+      <div class="page-head-main">
+        <div class="kicker">Supervisor · FastAPI Runtime · 运行中</div>
+        <h1>流程运行台</h1>
+        <div class="sub">
+          <span>版本 <b class="mono">hazard-flow v2.4.1</b></span><span class="dot"></span>
+          <span>最近刷新 <b class="num">10:42:18</b></span><span class="dot"></span>
+          <span>环境 <b>生产 · cn-shanghai-02</b></span>
+        </div>
+      </div>
+      <div class="page-actions">
+        <button class="btn" data-toast="已导出近 24 小时流程运行报表（CSV）。">导出运行报表</button>
+        <button class="btn" data-modal="replayModal">从断点恢复</button>
+      </div>
+    </div>
+
+    <section class="metrics" aria-label="运行指标">
+      <div class="metric">
+        <div class="metric-label">运行中实例</div>
+        <div class="metric-value"><b>12</b><span class="unit">个</span></div>
+        <div class="metric-delta"><span class="up">0 阻塞</span><span>4 个等待人工</span></div>
+        <svg class="spark" viewBox="0 0 56 22"><rect x="2" y="10" width="4" height="10"/><rect x="10" y="8" width="4" height="12"/><rect x="18" y="11" width="4" height="9"/><rect x="26" y="7" width="4" height="13"/><rect x="34" y="9" width="4" height="11"/><rect x="42" y="5" width="4" height="15"/><rect x="50" y="6" width="4" height="14" class="on"/></svg>
+      </div>
+      <div class="metric">
+        <div class="metric-label">今日已闭环</div>
+        <div class="metric-value"><b>86</b><span class="unit">个实例</span></div>
+        <div class="metric-delta"><span class="up">99.2%</span><span>流程成功率</span></div>
+        <svg class="spark" viewBox="0 0 56 22"><rect x="2" y="14" width="4" height="6"/><rect x="10" y="12" width="4" height="8"/><rect x="18" y="10" width="4" height="10"/><rect x="26" y="11" width="4" height="9"/><rect x="34" y="7" width="4" height="13"/><rect x="42" y="5" width="4" height="15"/><rect x="50" y="4" width="4" height="16" class="on"/></svg>
+      </div>
+      <div class="metric">
+        <div class="metric-label">平均研判耗时</div>
+        <div class="metric-value"><b>18.6</b><span class="unit">s</span></div>
+        <div class="metric-delta"><span class="up">-2.4s</span><span>较上周 · P95 27.1s</span></div>
+        <svg class="spark" viewBox="0 0 56 22"><rect x="2" y="6" width="4" height="14"/><rect x="10" y="8" width="4" height="12"/><rect x="18" y="7" width="4" height="13"/><rect x="26" y="10" width="4" height="10"/><rect x="34" y="11" width="4" height="9"/><rect x="42" y="13" width="4" height="7"/><rect x="50" y="14" width="4" height="6" class="on"/></svg>
+      </div>
+      <div class="metric">
+        <div class="metric-label">人工闸门等待</div>
+        <div class="metric-value"><b>4</b><span class="unit">个</span></div>
+        <div class="metric-delta"><span class="down">1</span><span>超 2 小时未处理</span></div>
+        <svg class="spark" viewBox="0 0 56 22"><rect x="2" y="9" width="4" height="11"/><rect x="10" y="7" width="4" height="13"/><rect x="18" y="8" width="4" height="12"/><rect x="26" y="6" width="4" height="14"/><rect x="34" y="9" width="4" height="11"/><rect x="42" y="11" width="4" height="9"/><rect x="50" y="12" width="4" height="8" class="on"/></svg>
+      </div>
+      <div class="metric alt">
+        <div class="metric-label">Worker 调用成功率</div>
+        <div class="metric-value"><b>99.6</b><span class="unit">%</span></div>
+        <div class="metric-delta"><span class="up">0 次熔断</span><span>今日 1,284 次调用</span></div>
+        <svg class="spark" viewBox="0 0 56 22"><rect x="2" y="12" width="4" height="8"/><rect x="10" y="10" width="4" height="10"/><rect x="18" y="11" width="4" height="9"/><rect x="26" y="8" width="4" height="12"/><rect x="34" y="7" width="4" height="13"/><rect x="42" y="5" width="4" height="15"/><rect x="50" y="4" width="4" height="16" class="on"/></svg>
+      </div>
+    </section>
+
+    <div class='grid proc-grid mt-14'>
+      <section class='panel flush proc-sm'>
+        <div class="panel-head">
+          <div class="panel-title">状态机 <span class="panel-sub">hazard_review_flow</span></div>
+          <span class="tag tag-teal">人工节点由代码强制</span>
+          <div class="panel-tools"><span class="small muted">当前实例 <b class="mono">PI-20261107-0042</b></span></div>
+        </div>
+        <div class="panel-body tight">
+          <div class="sm-wrap">
+            <svg viewBox="0 0 1100 300" style="width:100%;min-width:760px" role="img" aria-label="隐患研判流程状态机">
+              <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#B9B3A3"/>
+                </marker>
+              </defs>
+
+              <!-- row 1 -->
+              <g class="sm-node done">
+                <rect x="20" y="40" width="96" height="46" rx="3"/>
+                <text x="34" y="59" class="sm-t">INIT</text><text x="34" y="73">数据校验</text>
+              </g>
+              <g class="sm-node done">
+                <rect x="156" y="40" width="144" height="46" rx="3"/>
+                <text x="170" y="59" class="sm-t">AI_ANALYZING</text><text x="170" y="73">Hazard Worker 研判</text>
+              </g>
+              <g class="sm-node active">
+                <rect x="346" y="40" width="204" height="46" rx="3"/>
+                <text x="360" y="59" class="sm-t">PENDING_HUMAN_REVIEW</text><text x="360" y="73">人工复核 · 强制不可跳过</text>
+              </g>
+              <g class="sm-node">
+                <rect x="600" y="40" width="156" height="46" rx="3"/>
+                <text x="614" y="59" class="sm-t">PENDING_RECTIFY</text><text x="614" y="73">整改工单已派发</text>
+              </g>
+              <g class="sm-node">
+                <rect x="806" y="40" width="156" height="46" rx="3"/>
+                <text x="820" y="59" class="sm-t">PENDING_RECHECK</text><text x="820" y="73">整改复核取证</text>
+              </g>
+
+              <!-- row 2 -->
+              <g class="sm-node">
+                <rect x="806" y="170" width="156" height="46" rx="3"/>
+                <text x="820" y="189" class="sm-t">CLOSED</text><text x="820" y="203">销号闭环</text>
+              </g>
+              <g class="sm-node alt">
+                <rect x="346" y="170" width="204" height="46" rx="3"/>
+                <text x="360" y="189" class="sm-t">REJECTED</text><text x="360" y="203">误报关闭 / 人工驳回</text>
+              </g>
+              <g class="sm-node alt">
+                <rect x="156" y="170" width="144" height="46" rx="3"/>
+                <text x="170" y="189" class="sm-t">FAILED</text><text x="170" y="203">异常 · 支持断点恢复</text>
+              </g>
+
+              <!-- edges -->
+              <path class="sm-edge" d="M116 63 H152"/>
+              <path class="sm-edge hot" d="M300 63 H342"/>
+              <text class="sm-lbl hot" x="289" y="102">重大 / 低置信</text>
+              <path class="sm-edge" d="M550 63 H596"/>
+              <text class="sm-lbl" x="560" y="55">确认</text>
+              <path class="sm-edge" d="M756 63 H802"/>
+              <text class="sm-lbl" x="766" y="55">派单</text>
+
+              <path class="sm-edge" d="M884 86 V166"/>
+              <text class="sm-lbl" x="894" y="130">复核通过</text>
+              <path class="sm-edge dash" d="M448 86 V166"/>
+              <text class="sm-lbl" x="458" y="130">驳回 / 误报</text>
+              <path class="sm-edge dash" d="M228 86 V166" opacity=".7"/>
+              <text class="sm-lbl" x="238" y="130">任一节点异常</text>
+
+              <path class="sm-edge dash" d="M884 216 V242 H678 V92"/>
+              <text class="sm-lbl" x="694" y="236">复核不通过 · 退回整改</text>
+
+              <text x="20" y="284" style="font-family:var(--font-ui);font-size:9px;fill:var(--muted-2)">自动分流：一般隐患且置信度 ≥ 0.85 → 直接进入 PENDING_RECTIFY，跳过人工复核；重大隐患或 0.60 ≤ 置信度 &lt; 0.85 → 强制人工。</text>
+            </svg>
+          </div>
+        </div>
+        <div class="panel-foot">
+          <span>守卫在代码中执行：进入人工复核后，任何 API 调用都无法跳过复核直接写销号。</span>
+          <a class="link-quiet" style="margin-left:auto" href="#" data-toast="状态机定义来自 app/supervisor/state_machine.py，已纳入 Git 版本管理。">查看定义</a>
+        </div>
+      </section>
+
+      <aside class='col proc-side'>
+        <section class="panel">
+          <div class="panel-head tight"><div class="panel-title">实例概览</div><span class="badge badge-pending"><i></i>等待人工</span></div>
+          <div class="panel-body tight">
+            <div class="row between" style="align-items:flex-start">
+              <div><div class="mono" style="font-size:11px;color:var(--ink-2)">PI-20261107-0042</div><div class="tiny muted-2 mt-6">隐患研判流程 · 03 标段</div></div>
+              <span class="badge badge-pending" data-instance-state>PENDING_HUMAN_REVIEW</span>
+            </div>
+            <div class="param-grid mt-10" style="grid-template-columns:repeat(2,1fr)">
+              <div class="param"><span>已运行</span><b>24<em>min</em></b></div>
+              <div class="param"><span>节点耗时</span><b>18.6<em>s</em></b></div>
+              <div class="param"><span>执行人</span><b style="font-size:11px;font-family:var(--font-ui)">陈立群</b></div>
+              <div class="param"><span>重试</span><b>0<em>次</em></b></div>
+            </div>
+            <div class="divider"></div>
+            <div class="stack-6 small">
+              <div class="row between"><span class="muted">业务键</span><span class="mono">YH-20261107-018</span></div>
+              <div class="row between"><span class="muted">流程版本</span><span class="mono">v2.4.1</span></div>
+              <div class="row between"><span class="muted">Trace ID</span><span class="mono">3f9c…a71e</span></div>
+              <div class="row between"><span class="muted">数据权限</span><span>03 标段</span></div>
+            </div>
+            <a class="btn btn-sm mt-10" style="width:100%" href="web-hazard-review.html">进入复核 <span class="arw">→</span></a>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head tight"><div class="panel-title">守卫与阈值</div><span class="tag">代码固化</span></div>
+          <div class="panel-body tight stack-6" style="font-size:10.5px;color:var(--muted)">
+            <div class="row between"><span>自动入库阈值</span><b class="mono" style="color:var(--ink-2)">conf ≥ 0.85</b></div>
+            <div class="row between"><span>人工复核区间</span><b class="mono" style="color:var(--ink-2)">0.60 ≤ conf &lt; 0.85</b></div>
+            <div class="row between"><span>重大隐患</span><b style="color:var(--red)">强制人工</b></div>
+            <div class="row between"><span>驳回原因</span><b>必填</b></div>
+            <div class="row between"><span>权限校验</span><b>API + 状态机双重</b></div>
+            <div class="note mt-6"><span class="n-ico">i</span><span>阈值改动需走代码评审与回归测试，界面上不提供直接修改入口。</span></div>
+          </div>
+        </section>
+      </aside>
+
+      <section class='panel proc-trace'>
+        <div class="panel-head tight">
+          <div class="panel-title">Worker 调用链 <span class="panel-sub">PI-20261107-0042</span></div>
+          <div class="panel-tools"><span class="small muted-2">总耗时 24.8s</span></div>
+        </div>
+        <div class="panel-body tight">
+          <div class="trace">
+            <div class="trace-item ok">
+              <div class="trace-time">10:18:44.120</div>
+              <div class="trace-title">Supervisor 校验输入 <span class="tag">Pydantic</span></div>
+              <div class="trace-meta">project_id / section_id / stake_no / image_url 全部通过；影像存在性校验通过。</div>
+            </div>
+            <div class="trace-item ok">
+              <div class="trace-time">10:18:44.320</div>
+              <div class="trace-title">HazardWorker 启动 <span class="tag tag-blue">worker</span></div>
+              <div class="trace-meta">task_id <code>YH-…-018</code> · 幂等键已存在则复用结果。</div>
+            </div>
+            <div class="trace-item ok">
+              <div class="trace-time">10:18:44.860</div>
+              <div class="trace-title">RAG 混合检索 + Rerank</div>
+              <div class="trace-meta">向量 Top20 + BM25 Top20 → rerank Top4 · 规范 3 条、案例 1 条 · 186 ms。</div>
+            </div>
+            <div class="trace-item ok">
+              <div class="trace-time">10:18:45.010</div>
+              <div class="trace-title">LLM 研判 · Qwen-Plus</div>
+              <div class="trace-meta">prompt hazard_judge@v1.8 · 输入 2,914 tok / 输出 928 tok · 18.2 s。</div>
+            </div>
+            <div class="trace-item ok">
+              <div class="trace-time">10:19:03.220</div>
+              <div class="trace-title">结构化校验通过</div>
+              <div class="trace-meta">HazardResult schema OK · confirmation=confirmed · level=major · confidence=0.94。</div>
+            </div>
+            <div class="trace-item ok">
+              <div class="trace-time">10:19:03.310</div>
+              <div class="trace-title">分流守卫</div>
+              <div class="trace-meta">level == major → <code>PENDING_HUMAN_REVIEW</code>（不可自动通过）。</div>
+            </div>
+            <div class="trace-item run">
+              <div class="trace-time">10:22:10.006</div>
+              <div class="trace-title">等待人工复核</div>
+              <div class="trace-meta">已通知监理陈立群（企业微信 + 站内）· 等待 20 min · 未超 SLA。</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class='panel proc-health'>
+        <div class="panel-head tight"><div class="panel-title">Worker 健康度</div><span class="badge badge-closed"><i></i>全部正常</span></div>
+        <div class="panel-body tight">
+          <div class="grid" style="grid-template-columns:repeat(2,1fr);gap:8px">
+            <div class="worker-card">
+              <div class="wc-top"><span class="dot-live"></span><span class="wc-name">隐患研判</span></div>
+              <div class="wc-metric">18.6<span style="font-size:9px;color:var(--muted)"> s</span></div>
+              <div class="wc-sub">今日 182 次 · 成功率 99.5%</div>
+            </div>
+            <div class="worker-card">
+              <div class="wc-top"><span class="dot-live"></span><span class="wc-name">航线规划</span></div>
+              <div class="wc-metric">2.1<span style="font-size:9px;color:var(--muted)"> s</span></div>
+              <div class="wc-sub">今日 24 次 · 成功率 100%</div>
+            </div>
+            <div class="worker-card">
+              <div class="wc-top"><span class="dot-live"></span><span class="wc-name">报告生成</span></div>
+              <div class="wc-metric">46<span style="font-size:9px;color:var(--muted)"> s</span></div>
+              <div class="wc-sub">今日 8 次 · 队列 1</div>
+            </div>
+            <div class="worker-card">
+              <div class="wc-top"><span class="dot-live"></span><span class="wc-name">知识问答</span></div>
+              <div class="wc-metric">1.8<span style="font-size:9px;color:var(--muted)"> s</span></div>
+              <div class="wc-sub">今日 46 次 · 拒答 2 次</div>
+            </div>
+          </div>
+          <div class="note mt-10"><span class="n-ico">i</span><span>Worker 无状态，可按队列深度独立扩容；同一任务重复投递由幂等键去重。</span></div>
+        </div>
+      </section>
+
+      <section class='panel flush proc-inst'>
+        <div class="panel-head">
+          <div class="panel-title">流程实例 <span class="panel-sub">运行中 12 · 仅显示最近 6 条</span></div>
+          <div class="panel-tools">
+            <div class="segmented" data-filters="#instRows"><button class="is-on" data-filter="all">全部</button><button data-filter="human">等待人工</button><button data-filter="auto">自动流转</button></div>
+            <span class="small muted-2">自动刷新 · 10s</span>
+          </div>
+        </div>
+        <table class="table">
+          <thead><tr>
+            <th style="width:148px">实例 ID</th><th>业务对象</th><th style="width:130px">流程类型</th>
+            <th style="width:180px">当前状态</th><th style="width:120px">处理人 / 队列</th><th style="width:80px">已运行</th><th style="width:80px">SLA</th><th style="width:52px"></th>
+          </tr></thead>
+          <tbody id="instRows">
+            <tr data-row="human" style="background:#FDF8F4">
+              <td class="id">PI-20261107-0042</td>
+              <td><div class="t-main">YH-20261107-018 · 临边防护缺失</div><div class="t-sub">K13+420 · 重大隐患</div></td>
+              <td>隐患研判</td>
+              <td><span class="badge badge-pending">PENDING_HUMAN_REVIEW</span></td>
+              <td>陈立群</td>
+              <td class="mono">24m</td>
+              <td><span class="tag tag-teal">正常</span></td>
+              <td><a class="btn btn-sm btn-quiet" href="web-hazard-review.html">进入</a></td>
+            </tr>
+            <tr data-row="human">
+              <td class="id">PI-20261107-0041</td>
+              <td><div class="t-main">YH-20261107-021 · 基坑堆载超限</div><div class="t-sub">K14+020 · 重大隐患</div></td>
+              <td>隐患研判</td>
+              <td><span class="badge badge-pending">PENDING_HUMAN_REVIEW</span></td>
+              <td>李昊</td>
+              <td class="mono">21m</td>
+              <td><span class="tag tag-teal">正常</span></td>
+              <td><a class="btn btn-sm btn-quiet" href="web-hazard-review.html">进入</a></td>
+            </tr>
+            <tr data-row="auto">
+              <td class="id">PI-20261107-0039</td>
+              <td><div class="t-main">YH-20261107-017 · 裸土未覆盖</div><div class="t-sub">K12+680 · 一般隐患</div></td>
+              <td>隐患研判</td>
+              <td><span class="badge badge-closed">PENDING_RECTIFY</span></td>
+              <td>工单队列</td>
+              <td class="mono">3h 12m</td>
+              <td><span class="tag tag-teal">正常</span></td>
+              <td><a class="btn btn-sm btn-quiet" href="web-hazard-closure.html">跟踪</a></td>
+            </tr>
+            <tr data-row="human">
+              <td class="id">PI-20261107-0036</td>
+              <td><div class="t-main">BG-20261107-002 · 巡视日报</div><div class="t-sub">03 标段 · 2026-11-06</div></td>
+              <td>报告生成</td>
+              <td><span class="badge badge-ai">PENDING_REVIEW</span></td>
+              <td>周敏</td>
+              <td class="mono">1h 46m</td>
+              <td><span class="tag">待签发</span></td>
+              <td><a class="btn btn-sm btn-quiet" href="web-reports.html">查看</a></td>
+            </tr>
+            <tr data-row="auto">
+              <td class="id">PI-20261107-0031</td>
+              <td><div class="t-main">YJ-20261107-06 · 右幅全域巡检</div><div class="t-sub">任务编排 · 航线 RT-03-014</div></td>
+              <td>航线规划</td>
+              <td><span class="badge badge-brand">FLYING</span></td>
+              <td>设备队列</td>
+              <td class="mono">44m</td>
+              <td><span class="tag tag-teal">正常</span></td>
+              <td><a class="btn btn-sm btn-quiet" href="web-mission-detail.html">回放</a></td>
+            </tr>
+            <tr data-row="auto">
+              <td class="id">PI-20261106-0118</td>
+              <td><div class="t-main">YH-20261106-042 · 脚手架连墙件缺失</div><div class="t-sub">K15+120 · 已销号</div></td>
+              <td>整改复核</td>
+              <td><span class="badge badge-closed">CLOSED</span></td>
+              <td>—</td>
+              <td class="mono">18h</td>
+              <td><span class="tag tag-teal">已闭环</span></td>
+              <td><a class="btn btn-sm btn-quiet" href="web-hazard-closure.html">查看</a></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="panel-foot"><span>状态、转换与守卫均来自代码定义；实例状态持久化于 PostgreSQL，支持断点恢复。</span><a class="link-quiet" style="margin-left:auto" href="#" data-toast="已按当前筛选导出实例列表。">导出</a></div>
+      </section>
+
+      <section class='panel flush proc-audit'>
+        <div class="panel-head tight"><div class="panel-title">审计日志 <span class="panel-sub">仅追加 · 保留 6 个月</span></div><div class="panel-tools"><span class="small muted-2">按时间倒序 · 10:42:18</span></div></div>
+        <table class="table table-compact audit-row">
+          <thead><tr><th style="width:78px">时间</th><th style="width:120px">操作人</th><th style="width:96px">角色</th><th>操作</th><th style="width:150px">对象</th><th style="width:110px">IP</th><th style="width:80px">结果</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">10:42:18</td><td>陈立群</td><td>监理</td><td>打开隐患复核 <span class="mono muted-2">GET /hazards/018</span></td><td class="mono">YH-…-018</td><td class="mono">10.21.6.44</td><td><span class="badge badge-closed">成功</span></td></tr>
+            <tr><td class="mono">10:39:02</td><td>system</td><td>Supervisor</td><td>状态转换 <span class="mono muted-2">AI_ANALYZING → PENDING_HUMAN_REVIEW</span></td><td class="mono">PI-…-0042</td><td class="mono">—</td><td><span class="badge badge-closed">成功</span></td></tr>
+            <tr><td class="mono">10:38:40</td><td>system</td><td>RAG</td><td>知识库检索 <span class="mono muted-2">4 docs / 12 cases</span></td><td class="mono">YH-…-018</td><td class="mono">—</td><td><span class="badge badge-closed">成功</span></td></tr>
+            <tr><td class="mono">10:36:12</td><td>王鑫</td><td>飞手</td><td>标记补飞段 <span class="mono muted-2">K13+980—K14+800</span></td><td class="mono">YJ-…-06</td><td class="mono">10.21.6.51</td><td><span class="badge badge-closed">成功</span></td></tr>
+            <tr><td class="mono">10:30:05</td><td>赵海峰</td><td>施工</td><td>尝试访问 02 标段隐患 <span class="mono muted-2">GET /hazards</span></td><td class="mono">02 标段</td><td class="mono">10.21.8.12</td><td><span class="badge badge-major">拒绝 · 越权</span></td></tr>
+            <tr><td class="mono">10:28:44</td><td>admin</td><td>管理员</td><td>更新 Worker 并发上限 <span class="mono muted-2">8 → 12</span></td><td class="mono">hazard-worker</td><td class="mono">10.21.1.8</td><td><span class="badge badge-closed">成功</span></td></tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="modal-mask" id="replayModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div><h3>从断点恢复流程</h3><p>用于 Worker 超时、外部接口故障或人工节点滞留后的恢复。</p></div>
+      <button class="x" data-close aria-label="关闭">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>流程实例</label><select class="select"><option>PI-20261107-0042 · 隐患研判 · PENDING_HUMAN_REVIEW</option><option>PI-20261107-0041 · 隐患研判 · PENDING_HUMAN_REVIEW</option></select></div>
+      <div class="field mt-10"><label>恢复点</label><select class="select"><option>从最近成功节点继续（推荐）</option><option>重新执行当前 Worker</option><option>回退至 AI_ANALYZING</option></select></div>
+      <div class="note warn mt-14"><span class="n-ico">!</span><span><b>幂等保护：</b>恢复不会重复创建工单或重复写入台账；已产生的副作用按幂等键复用。</span></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-primary" data-close data-toast="恢复指令已下发，实例将从最近成功节点继续。">确认恢复</button>
+    </div>
+  </div>
+</div>
+
+<script src="prototype.js"></script>
+</body>
+</html>
+

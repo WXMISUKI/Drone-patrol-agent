@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>现场端 Android · 无人机工地巡视智能识别系统</title>
+<meta name="description" content="施工安全员现场端：整改工单、拍照取证、资料上报与弱网续传。">
+<link rel="stylesheet" href="prototype.css">
+</head>
+<body class="mobile-page android">
+
+<div class="mobile-side">
+  <a class="ms-back" href="index.html">← 原型总览</a>
+  <div class="kicker" style="margin-top:18px">Field App · Android</div>
+  <h2>同一业务，<br>另一套手感。</h2>
+  <p>同一套接口与状态机，换成施工安全员的视角：工单签收、现场取证、整改上报。保留 Material 的返回、悬浮操作与底部导航，让班组人员不用重新学习。</p>
+  <div class="ms-block">
+    <h3>本屏状态</h3>
+    <div class="ms-row"><span>当前用户</span><b>赵海峰 · 施工安全员</b></div>
+    <div class="ms-row"><span>待整改</span><b>2 条 · 1 条重大</b></div>
+    <div class="ms-row"><span>待提交</span><b>1 条</b></div>
+    <div class="ms-row"><span>剩余时限</span><b>6 小时</b></div>
+    <div class="ms-row"><span>离线缓存</span><b>2 项待同步</b></div>
+  </div>
+  <div class="ms-block">
+    <h3>与 iOS 的差异</h3>
+    <div class="ms-row"><span>导航</span><b>Material 底部栏</b></div>
+    <div class="ms-row"><span>主操作</span><b>悬浮拍照按钮</b></div>
+    <div class="ms-row"><span>信息密度</span><b>工单优先</b></div>
+  </div>
+  <div class="ms-block">
+    <h3>其他界面</h3>
+    <div class="row" style="gap:6px;flex-wrap:wrap">
+      <a class="btn btn-sm" href="mobile-ios.html">iOS 版</a>
+      <a class="btn btn-sm" href="web-hazard-closure.html">桌面闭环</a>
+    </div>
+  </div>
+</div>
+
+<div class="mobile-stage">
+  <div class="mobile-frame">
+    <div class="mobile-screen">
+      <div class="m-status"><span>9:41</span><span class="sig">▮▮▮ 4G ▪▪</span></div>
+
+      <div class="m-head">
+        <div>
+          <div class="m-title">我的工单</div>
+          <div class="m-sub">03 标段 · 施工安全员 赵海峰</div>
+        </div>
+        <span class="m-avatar" style="background:var(--teal)">赵</span>
+      </div>
+
+      <div class="m-body">
+        <div class="row" style="gap:6px;margin-bottom:10px;overflow:auto">
+          <span class="tag tag-brand" style="height:24px;display:inline-flex;align-items:center">待整改 2</span>
+          <span class="tag" style="height:24px;display:inline-flex;align-items:center">待提交 1</span>
+          <span class="tag" style="height:24px;display:inline-flex;align-items:center">已闭环 8</span>
+        </div>
+
+        <div class="m-hero" style="min-height:166px">
+          <img src="assets/aerial-site.jpg" alt="基坑临边整改工单现场">
+          <div class="mh-k">GD-20261104-031 · 重大隐患 · 剩余 6h</div>
+          <div class="mh-t">深基坑临边防护栏杆缺失</div>
+          <div class="mh-m">K14+380 右幅 5# 承台 · 桥梁一队</div>
+          <div class="mh-p"><i style="width:82%;background:#E2A33C"></i></div>
+        </div>
+
+        <div class="m-card mt-10">
+          <div class="m-card-body" style="padding:11px 12px">
+            <div class="row between">
+              <div><b style="font-size:11.5px">整改要求</b><div class="tiny muted-2" style="margin-top:2px">监理 陈立群 · 11-04 10:43 下发</div></div>
+              <span class="badge badge-major">重大</span>
+            </div>
+            <p class="small" style="margin-top:8px;line-height:1.7;color:var(--ink-2)">补齐 32m 临边防护栏杆（上杆 1.2m、立杆 ≤2m），清理坑边 1.5m 内堆土，设置警戒与警示牌，提交整改前后影像。</p>
+            <div class="row" style="gap:6px;margin-top:9px;flex-wrap:wrap">
+              <span class="tag tag-teal">已签收</span><span class="tag">整改中</span><span class="tag">费用 ¥8,600</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="m-section-title"><span>待办工单</span><a href="#">全部 11 条</a></div>
+        <div class="m-card">
+          <div class="m-list-item" style="padding:11px 12px;border-bottom:1px solid #EFEDE6">
+            <div class="m-thumb" style="position:relative">
+              <img src="assets/aerial-site.jpg" alt="裸土未覆盖">
+              <span style="position:absolute;left:2px;top:2px;background:var(--amber);color:#fff;font-size:7px;padding:0 3px">一般</span>
+            </div>
+            <div class="m-list-body">
+              <b>取土场裸土未覆盖</b>
+              <span>K12+680 · 剩余 12 小时 · 面积 380㎡</span>
+              <div class="row" style="gap:5px;margin-top:6px">
+                <a class="btn btn-sm" href="#" style="height:24px;padding:0 8px;font-size:9.5px" data-toast="已打开整改取证相机。">去整改</a>
+                <a class="btn btn-sm btn-quiet" href="web-hazard-closure.html" style="height:24px;padding:0 8px;font-size:9.5px">查看要求</a>
+              </div>
+            </div>
+          </div>
+          <div class="m-list-item" style="padding:11px 12px;border-bottom:1px solid #EFEDE6">
+            <div class="m-thumb" style="position:relative">
+              <img src="assets/aerial-closeup.jpg" alt="脚手架连墙件">
+              <span style="position:absolute;left:2px;top:2px;background:var(--amber);color:#fff;font-size:7px;padding:0 3px">一般</span>
+            </div>
+            <div class="m-list-body">
+              <b>脚手架连墙件缺失</b>
+              <span>K15+120 · 剩余 1 天 · 已停用该段架体</span>
+              <div class="row" style="gap:5px;margin-top:6px">
+                <a class="btn btn-sm" href="#" style="height:24px;padding:0 8px;font-size:9.5px" data-toast="已打开整改取证相机。">去整改</a>
+                <span class="tag" style="height:24px;display:inline-flex;align-items:center">待整改</span>
+              </div>
+            </div>
+          </div>
+          <div class="m-list-item" style="padding:11px 12px;border-bottom:0">
+            <div class="m-thumb" style="position:relative">
+              <img src="assets/aerial-site.jpg" alt="整改待提交">
+              <span style="position:absolute;left:2px;top:2px;background:var(--teal);color:#fff;font-size:7px;padding:0 3px">待提交</span>
+            </div>
+            <div class="m-list-body">
+              <b>材料堆场未设警戒</b>
+              <span>K14+900 · 已拍照 3 张 · 待提交</span>
+              <div class="row" style="gap:5px;margin-top:6px">
+                <a class="btn btn-sm btn-teal" href="#" style="height:24px;padding:0 8px;font-size:9.5px" data-toast="已提交整改资料，等待监理复核。">提交上报</a>
+                <span class="tag tag-teal" style="height:24px;display:inline-flex;align-items:center">弱网缓存</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="m-section-title"><span>快捷操作</span></div>
+        <div class="m-actions">
+          <a class="m-action" href="#" data-toast="已打开整改取证：拍照自动叠加时间、桩号与定位水印。">
+            <span class="ma-ico">◉</span><span><b>拍照上报</b><span>水印 + 定位</span></span>
+          </a>
+          <a class="m-action" href="#" data-toast="整改资料模板已下载。">
+            <span class="ma-ico">▤</span><span><b>资料模板</b><span>交底 / 签到</span></span>
+          </a>
+          <a class="m-action" href="web-knowledge.html">
+            <span class="ma-ico">?</span><span><b>规范问答</b><span>条款可追溯</span></span>
+          </a>
+          <a class="m-action" href="#" data-toast="离线包已更新（2 个工单的整改要求与历史影像）。">
+            <span class="ma-ico">⇩</span><span><b>离线包</b><span>2 项待同步</span></span>
+          </a>
+        </div>
+
+        <div class="m-note">当前弱网（2G）。照片与说明先写入本地队列，恢复后自动上传；重复提交不会产生重复工单。</div>
+        <div style="height:12px"></div>
+      </div>
+
+      <button class="m-fab" data-toast="已打开相机：拍摄整改后影像，自动绑定工单与桩号。" aria-label="拍照上报">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13.2" r="3.2"/></svg>
+      </button>
+
+      <nav class="m-tabbar" aria-label="底部导航">
+        <a class="m-tab is-on" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
+          工单
+        </a>
+        <a class="m-tab" href="web-mission-detail.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 3 7.5 12 12l9-4.5z"/><path d="M3 12l9 4.5 9-4.5M3 16.5 12 21l9-4.5"/></svg>
+          任务
+        </a>
+        <a class="m-tab" href="#">
+          <span class="m-dot" style="background:var(--brand)"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16v11H8l-4 4z"/></svg>
+          消息
+        </a>
+        <a class="m-tab" href="web-admin.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20c.7-3.4 3.2-5 6.5-5s5.8 1.6 6.5 5"/></svg>
+          我的
+        </a>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script src="prototype.js"></script>
+</body>
+</html>

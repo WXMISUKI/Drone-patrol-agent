@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>研发交付包 · 无人机工地巡视智能识别系统 V4.0</title>
+<meta name="description" content="高保真原型配套的研发交付说明：页面矩阵、状态机、数据契约、接口建议与验收清单。">
+<link rel="stylesheet" href="prototype.css">
+<style>
+  .doc-top{
+    position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;
+    padding:13px 26px;background:rgba(244,243,238,.92);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .doc-top .dt-brand{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:600}
+  .doc-top .brand-mark{width:28px;height:28px}
+  .doc-top nav{margin-left:auto;display:flex;gap:14px;font-size:10.5px;color:var(--muted)}
+  .doc-top nav a:hover{color:var(--ink)}
+  .doc-meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;font-size:10px;color:var(--muted-2)}
+  .doc-meta span{display:flex;align-items:center;gap:6px}
+  .doc-meta span::before{content:"";width:4px;height:4px;background:var(--line-2)}
+  .pill-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .ck{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:11px;color:var(--muted)}
+  .ck:last-child{border-bottom:0}
+  .ck .box{width:13px;height:13px;border:1px solid var(--line-2);flex:none;margin-top:2px;display:grid;place-items:center;font-size:8px;color:var(--teal)}
+  .ck b{color:var(--ink-2);font-weight:600}
+</style>
+</head>
+<body>
+<header class="doc-top">
+  <div class="dt-brand">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
+        <path d="M8.4 8.4 5 5M15.6 8.4 19 5M8.4 15.6 5 19M15.6 15.6 19 19"/>
+        <rect x="8.6" y="8.6" width="6.8" height="6.8" rx="1.1"/>
+        <circle cx="4.6" cy="4.6" r="1.5"/><circle cx="19.4" cy="4.6" r="1.5"/>
+        <circle cx="4.6" cy="19.4" r="1.5"/><circle cx="19.4" cy="19.4" r="1.5"/>
+      </svg>
+    </span>
+    无人机巡视智能体 · 交付包
+  </div>
+  <nav>
+    <a href="index.html">原型总览</a>
+    <a href="web-command-center.html">管理后台</a>
+    <a href="mobile-ios.html">现场端</a>
+    <a href="javascript:window.print()">打印</a>
+  </nav>
+</header>
+
+<div class="doc-wrap">
+  <section class="doc-hero">
+    <div class="kicker">Handoff · V4.0 · 2026-11-07</div>
+    <h1>研发交付包</h1>
+    <p>本交付包与高保真原型配套，面向研发、测试与客户业务专家。原型用于确认信息结构、关键状态与交互路径；本页把页面矩阵、状态机、数据契约与待确认事项一次说清，减少“照着图猜逻辑”。</p>
+    <div class="doc-meta">
+      <span>依据：《智能体开发方案（FastAPI Supervisor+Worker 代码编排版）V2.0》</span>
+      <span>依据：《用户功能需求清单 V1.0》</span>
+      <span>演示项目：S32 公路改扩建工程 · 03 标段</span>
+      <span>全部数据为虚构演示数据</span>
+    </div>
+    <div class="pill-row">
+      <span class="tag tag-brand">桌面 9 页</span>
+      <span class="tag tag-blue">移动 2 页</span>
+      <span class="tag">索引 1 页</span>
+      <span class="tag">无外部依赖 · 可离线打开</span>
+    </div>
+  </section>
+
+  <div class="doc-layout">
+    <nav class="doc-nav" aria-label="交付包目录">
+      <div class="dn-label">交付范围</div>
+      <a href="#s1">01 页面与模块映射</a>
+      <a href="#s2">02 状态矩阵</a>
+      <a href="#s3">03 主链与分支</a>
+      <div class="dn-label">逻辑与契约</div>
+      <a href="#s4">04 状态机与守卫</a>
+      <a href="#s5">05 数据契约</a>
+      <a href="#s6">06 接口建议</a>
+      <div class="dn-label">规范与验收</div>
+      <a href="#s7">07 设计系统</a>
+      <a href="#s8">08 验收清单</a>
+      <a href="#s9">09 待确认事项</a>
+    </nav>
+
+    <div>
+      <section class="doc-section" id="s1">
+        <h2><span class="dn">01</span>页面与模块映射</h2>
+        <p>页面按“巡视作业—闭环管理—智能支撑—现场端”组织。每个页面都对应需求清单中的功能编号，避免原型成为无源之水。</p>
+        <table class="doc-table">
+          <thead><tr><th style="width:150px">页面</th><th style="width:160px">对应需求</th><th>核心内容</th><th style="width:130px">关键状态</th></tr></thead>
+          <tbody>
+            <tr><td><a class="link" href="web-command-center.html">全域指挥台</a></td><td>R1-01 / R3-05 / R4-01</td><td>覆盖、架次、隐患流、任务队列、机巢与编排中枢健康</td><td>执行中 / 待复核 / 告警</td></tr>
+            <tr><td><a class="link" href="web-mission-plan.html">任务与航线编排</a></td><td>R1-02 / R1-03 / R1-04</td><td>自然语言解析、带状/区域/航点航线、参数、飞前合规检查单</td><td>草稿 / 检查中 / 已下发</td></tr>
+            <tr><td><a class="link" href="web-mission-detail.html">飞行回放与影像</a></td><td>R1-05 / R2-01 / R2-03</td><td>航迹时间轴、遥测、事件、回传影像、影像质量与归档</td><td>飞行中 / 返航 / 已归档</td></tr>
+            <tr><td><a class="link" href="web-hazard-review.html">AI 隐患复核</a></td><td>R3-01 / R3-02 / R3-05 / R3-09</td><td>证据框、视觉原始输出、RAG 依据、处置建议、人工裁决</td><td>待复核 / 已确认 / 误报</td></tr>
+            <tr><td><a class="link" href="web-process-monitor.html">流程运行台</a></td><td>方案 3.2 状态机</td><td>8 状态状态机、守卫阈值、Worker 调用链、实例与审计</td><td>运行 / 等待人工 / 失败</td></tr>
+            <tr><td><a class="link" href="web-hazard-closure.html">整改闭环</a></td><td>R4-02 / R4-07 / R4-03</td><td>前后影像对比、整改资料、逐项复核、通过销号或退回</td><td>待整改 / 待复核 / 已销号</td></tr>
+            <tr><td><a class="link" href="web-reports.html">报告中心</a></td><td>R4-05 / R4-06 / R4-08</td><td>日报/周报/专项、数据现算、版本历史、Word 导出</td><td>草稿 / 待审核 / 已签发 / 已归档</td></tr>
+            <tr><td><a class="link" href="web-knowledge.html">知识库与问答</a></td><td>R5-05 / 方案四章</td><td>四库构成、混合检索、Rerank、强制引用、无依据拒答</td><td>已回答 / 拒答 / 转人工</td></tr>
+            <tr><td><a class="link" href="web-admin.html">平台管理</a></td><td>R5-01~R5-08 / 方案五章</td><td>RBAC 矩阵、数据范围、机巢设备、模型接入、审计安全</td><td>正常 / 联调 / 告警</td></tr>
+            <tr><td><a class="link" href="mobile-ios.html">现场端 iOS</a></td><td>R3-05 / R4-02 / R5-08</td><td>监理视角：待复核、任务、整改核对、弱网缓存</td><td>在线 / 弱网 / 待同步</td></tr>
+            <tr><td><a class="link" href="mobile-android.html">现场端 Android</a></td><td>R4-02 / R4-04 / R5-08</td><td>施工视角：工单、拍照取证、提交上报、离线包</td><td>整改中 / 待提交 / 已上报</td></tr>
+          </tbody>
+        </table>
+        <div class="note mt-14"><span class="n-ico">i</span><span>需求清单中 R2-06 实景三维、R3-06 变化检测、R3-07/08 热红外与多光谱、R4-08 工程量核算为中期能力，本版原型只在报告与设备页留下入口，不展开完整界面。</span></div>
+      </section>
+
+      <section class="doc-section" id="s2">
+        <h2><span class="dn">02</span>状态矩阵</h2>
+        <p>研发实现时，页面不自行定义状态，统一从后端流程实例读取。下表是界面需要覆盖的展示状态，不含短暂过渡态。</p>
+        <table class="doc-table">
+          <thead><tr><th style="width:140px">对象</th><th>状态</th><th style="width:250px">界面表现</th><th style="width:120px">可执行操作</th></tr></thead>
+          <tbody>
+            <tr><td>巡视任务</td><td>草稿 / 待检查 / 待下发 / 执行中 / 已返航 / 已归档 / 补飞</td><td>状态徽标 + 进度条 + 时间轴；执行中显示实时遥测</td><td>编辑、下发、返航、补飞</td></tr>
+            <tr><td>隐患</td><td>待研判 / 待人工复核 / 待整改 / 待复核 / 已销号 / 误报关闭</td><td>级别色（重大红 / 一般琥珀）+ 流程状态徽标</td><td>复核、派单、退回、销号</td></tr>
+            <tr><td>流程实例</td><td>INIT / AI_ANALYZING / PENDING_HUMAN_REVIEW / PENDING_RECTIFY / PENDING_RECHECK / CLOSED / REJECTED / FAILED</td><td>状态机高亮 + 当前节点耗时 + SLA</td><td>进入、恢复、转办（受权限）</td></tr>
+            <tr><td>报告</td><td>草稿 / 待审核 / 已签发 / 已归档</td><td>版本历史 + 锁定标识；签发后隐藏编辑</td><td>生成、提交审核、签发、导出</td></tr>
+            <tr><td>设备</td><td>在线待命 / 作业中 / 返航 / 离线 / 维保</td><td>设备列表状态点 + 电量/舱温</td><td>查看、远程调试、停用</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="doc-section" id="s3">
+        <h2><span class="dn">03</span>主链与分支</h2>
+        <p>建议按以下路径演示，能覆盖“自动流转 + 人工闸门 + 退回”三种关键行为：</p>
+        <div class="flow-strip">
+          <div class="flow-step"><span class="n">01</span><strong>编排下发</strong><p>自然语言 → 航线 → 合规检查 → 下发</p></div>
+          <div class="flow-step"><span class="n">02</span><strong>飞行回传</strong><p>航迹、遥测、影像、AI 命中</p></div>
+          <div class="flow-step"><span class="n">03</span><strong>人工复核</strong><p>证据 + 依据 → 确认 / 误报 / 存疑</p></div>
+          <div class="flow-step"><span class="n">04</span><strong>整改复核</strong><p>派单 → 上报 → 对比 → 销号或退回</p></div>
+          <div class="flow-step"><span class="n">05</span><strong>报告归档</strong><p>数据现算 → 版本 → 审核签发</p></div>
+        </div>
+        <h3>分支演示</h3>
+        <ul>
+          <li><b>一般隐患自动流转：</b>在复核台选择低风险样本，或在流程运行台查看 <code>conf ≥ 0.85 且 level=general</code> 的实例，状态直接进入 PENDING_RECTIFY。</li>
+          <li><b>重大隐患强制人工：</b>复核台的 018 号隐患，确认前必须填写复核意见与现场核实方式；状态机守卫不允许跳过。</li>
+          <li><b>复核退回：</b>在整改闭环页点击“退回整改”，流程回到 PENDING_RECTIFY，整改时限重算，连续两次退回升级建设单位。</li>
+          <li><b>误报回流：</b>复核台“标记误报”需选择原因，样本进入坏例库，参与下一轮提示词与模型评估。</li>
+        </ul>
+      </section>
+
+      <section class="doc-section" id="s4">
+        <h2><span class="dn">04</span>状态机与守卫</h2>
+        <p>与开发方案 3.2.2 保持一致。原型中的状态机是同一份定义的视觉表达，研发实现时以代码为准。</p>
+        <table class="doc-table">
+          <thead><tr><th style="width:250px">转换</th><th>触发条件</th><th>守卫 / 约束</th></tr></thead>
+          <tbody>
+            <tr><td><code>INIT → AI_ANALYZING</code></td><td>输入数据完整</td><td>必填字段校验、影像存在</td></tr>
+            <tr><td><code>AI_ANALYZING → PENDING_RECTIFY</code></td><td>一般隐患且置信度 ≥ 0.85</td><td>Worker 输出合法、自动入库权限</td></tr>
+            <tr><td><code>AI_ANALYZING → PENDING_HUMAN_REVIEW</code></td><td>重大隐患或 0.60 ≤ 置信度 &lt; 0.85</td><td>强制人工，不可自动跳过</td></tr>
+            <tr><td><code>AI_ANALYZING → REJECTED</code></td><td>人工确认误报</td><td>监理角色、误报原因必填</td></tr>
+            <tr><td><code>PENDING_HUMAN_REVIEW → PENDING_RECTIFY</code></td><td>人工确认隐患</td><td>监理 / 建设单位权限</td></tr>
+            <tr><td><code>PENDING_HUMAN_REVIEW → REJECTED</code></td><td>人工驳回</td><td>驳回原因必填</td></tr>
+            <tr><td><code>PENDING_RECTIFY → PENDING_RECHECK</code></td><td>施工方提交整改</td><td>所属标段责任人校验</td></tr>
+            <tr><td><code>PENDING_RECHECK → CLOSED</code></td><td>复核通过</td><td>监理确认、证据齐全</td></tr>
+            <tr><td><code>PENDING_RECHECK → PENDING_RECTIFY</code></td><td>复核不通过</td><td>退回原因必填</td></tr>
+            <tr><td><code>任意 → FAILED</code></td><td>系统异常</td><td>自动告警、支持断点恢复</td></tr>
+          </tbody>
+        </table>
+        <h3>实现约束</h3>
+        <ul>
+          <li>状态转换只允许通过 Supervisor 接口发生，Worker 不得直接写业务状态。</li>
+          <li>权限在 API 依赖注入与状态机守卫中<b>双重校验</b>，数据查询自动附加标段过滤。</li>
+          <li>所有转换写入审计日志，包含操作人、时间、前后状态、原因与 trace id。</li>
+          <li>提示词、状态机定义、报告模板均纳入 Git 与版本号管理。</li>
+        </ul>
+      </section>
+
+      <section class="doc-section" id="s5">
+        <h2><span class="dn">05</span>数据契约</h2>
+        <p>原型中所有卡片与表格字段均来自以下结构，研发可直接映射为 Pydantic 模型。</p>
+        <h3>隐患研判结果 HazardResult</h3>
+        <pre class="code-block">{
+  <span class="s">"hazard_id"</span>: <span class="s">"YH-20261107-018"</span>,
+  <span class="s">"confirmation"</span>: <span class="s">"confirmed"</span>,          <span class="c">// confirmed | false_positive | uncertain</span>
+  <span class="s">"hazard_name"</span>: <span class="s">"临边防护栏杆缺失"</span>,
+  <span class="s">"level"</span>: <span class="s">"major"</span>,                      <span class="c">// major | general</span>
+  <span class="s">"stake_no"</span>: <span class="s">"K13+420"</span>,
+  <span class="s">"description"</span>: <span class="s">"作业平台外侧临边防护缺失约18m..."</span>,
+  <span class="s">"regulation_refs"</span>: [
+    { <span class="s">"doc"</span>: <span class="s">"JTG F90-2015"</span>, <span class="s">"clause"</span>: <span class="s">"4.3.7"</span>, <span class="s">"score"</span>: <span class="n">0.92</span> }
+  ],
+  <span class="s">"action_suggestion"</span>: <span class="s">"立即停工，2小时内设置临时防护..."</span>,
+  <span class="s">"confidence"</span>: <span class="n">0.94</span>,
+  <span class="s">"need_human"</span>: <span class="k">true</span>
+}</pre>
+        <h3>流程实例 ProcessInstance</h3>
+        <pre class="code-block">{
+  <span class="s">"instance_id"</span>: <span class="s">"PI-20261107-0042"</span>,
+  <span class="s">"process_type"</span>: <span class="s">"hazard_review"</span>,
+  <span class="s">"process_version"</span>: <span class="s">"v2.4.1"</span>,
+  <span class="s">"business_key"</span>: <span class="s">"YH-20261107-018"</span>,
+  <span class="s">"state"</span>: <span class="s">"PENDING_HUMAN_REVIEW"</span>,
+  <span class="s">"assignee"</span>: <span class="s">"chenliqun"</span>,
+  <span class="s">"section_id"</span>: <span class="s">"S32-03"</span>,
+  <span class="s">"entered_at"</span>: <span class="s">"2026-11-07T10:22:10+08:00"</span>,
+  <span class="s">"sla_due_at"</span>: <span class="s">"2026-11-07T18:22:10+08:00"</span>,
+  <span class="s">"trace_id"</span>: <span class="s">"3f9c...a71e"</span>
+}</pre>
+        <div class="note"><span class="n-ico">i</span><span>字段命名以后端契约为准；原型中的 <span class="mono">stake_no</span>、<span class="mono">section_id</span>、<span class="mono">instance_id</span> 与方案保持一致。</span></div>
+      </section>
+
+      <section class="doc-section" id="s6">
+        <h2><span class="dn">06</span>接口建议</h2>
+        <p>仅列原型涉及的关键接口，完整 OpenAPI 由 FastAPI 自动生成。</p>
+        <table class="doc-table">
+          <thead><tr><th style="width:78px">方法</th><th style="width:250px">路径</th><th>用途</th><th style="width:150px">权限</th></tr></thead>
+          <tbody>
+            <tr><td><code>POST</code></td><td><code>/api/v1/missions</code></td><td>创建/下发巡视任务，返回任务号与流程实例</td><td>监理 / 建设</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/v1/webhooks/vision</code></td><td>接收视觉识别结果，触发隐患研判流程</td><td>服务间鉴权</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/v1/hazards/{id}</code></td><td>隐患详情：检测框、研判、引用、复核记录</td><td>按标段</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/v1/hazards/{id}/review</code></td><td>提交人工裁决（confirm / reject / uncertain）</td><td>监理 / 建设</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/v1/workorders/{id}/rectify</code></td><td>施工方提交整改资料与影像</td><td>所属标段施工</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/v1/workorders/{id}/recheck</code></td><td>复核通过销号或退回整改</td><td>监理</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/v1/reports</code></td><td>生成报告草稿，返回版本号</td><td>监理以上</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/v1/knowledge/query</code></td><td>知识问答，返回答案、引用与拒答标记</td><td>按角色</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/v1/processes/{id}/trace</code></td><td>流程调用链与审计事件</td><td>管理员 / 监理</td></tr>
+          </tbody>
+        </table>
+        <h3>Webhook 事件</h3>
+        <div class="doc-grid">
+          <div class="doc-card"><h4>vision.detected</h4><p>视觉服务完成一批影像检测，携带 detections 与影像 ID。</p></div>
+          <div class="doc-card"><h4>mission.landed</h4><p>架次降落，触发影像归档、质量检查与补飞判断。</p></div>
+          <div class="doc-card"><h4>rectify.submitted</h4><p>施工方提交整改，Supervisor 恢复流程至待复核。</p></div>
+          <div class="doc-card"><h4>report.issued</h4><p>报告签发，触发归档与通知订阅方。</p></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="s7">
+        <h2><span class="dn">07</span>设计系统</h2>
+        <p>视觉语言取自“工程控制台 + 航测图纸 + 纸面台账”：暖纸底、深海军蓝导航、砖橙强调色，数据用窄体数字，状态用语义色而非装饰色。</p>
+        <div class="doc-grid three">
+          <div class="doc-card"><h4>主色</h4><p><span style="display:inline-block;width:12px;height:12px;background:#C2502C;vertical-align:-2px;margin-right:5px"></span><code>#C2502C</code> 操作与品牌</p></div>
+          <div class="doc-card"><h4>确认</h4><p><span style="display:inline-block;width:12px;height:12px;background:#146B5D;vertical-align:-2px;margin-right:5px"></span><code>#146B5D</code> 通过 / 已闭环</p></div>
+          <div class="doc-card"><h4>重大</h4><p><span style="display:inline-block;width:12px;height:12px;background:#B02A21;vertical-align:-2px;margin-right:5px"></span><code>#B02A21</code> 重大隐患 / 阻断</p></div>
+          <div class="doc-card"><h4>字体</h4><p>UI 使用系统中文黑体；数字用 Bahnschrift；编号与代码用等宽字体，保证台账对齐。</p></div>
+          <div class="doc-card"><h4>密度</h4><p>基础字号 13px，表格行高 36—40px；面板 1px 描边、4—6px 圆角，不用大圆角与重阴影。</p></div>
+          <div class="doc-card"><h4>影像</h4><p>航拍图统一降饱和、压暗边缘；检测框使用橙色 1.5px，标签贴在框左上角，避免遮挡证据。</p></div>
+        </div>
+        <h3>可复用组件</h3>
+        <p>状态机轨道 <code>.rail</code>、调用链 <code>.trace</code>、证据框 <code>.bbox</code>、法规引用 <code>.cite</code>、前后对比 <code>.compare</code>、指标卡 <code>.metric</code>、报告纸面 <code>.paper</code>。全部为原生 CSS，无外部依赖。</p>
+      </section>
+
+      <section class="doc-section" id="s8">
+        <h2><span class="dn">08</span>验收清单</h2>
+        <p>原型评审通过后，研发按以下条目逐项确认；标“必须”的项不通过则不能进入开发联调。</p>
+        <div class="doc-grid">
+          <div>
+            <div class="ck"><span class="box">✓</span><div><b>主链完整</b>：编排 → 飞行 → 复核 → 整改 → 报告，五段可连续走通。</div></div>
+            <div class="ck"><span class="box">✓</span><div><b>人工闸门</b>：重大隐患无法绕过复核直接派单。</div></div>
+            <div class="ck"><span class="box">✓</span><div><b>权限可见</b>：切换监理/建设/施工，操作按钮与数据范围同步变化。</div></div>
+            <div class="ck"><span class="box">✓</span><div><b>证据可追溯</b>：每个隐患可回到原图、任务、桩号与规范条款。</div></div>
+            <div class="ck"><span class="box">✓</span><div><b>状态一致</b>：页面状态与流程实例状态同名，不出现两套说法。</div></div>
+          </div>
+          <div>
+            <div class="ck"><span class="box">✓</span><div><b>版本受控</b>：报告每次修改生成新版本，签发后锁定。</div></div>
+            <div class="ck"><span class="box">✓</span><div><b>无依据拒答</b>：问答在检索分数不足时明确拒答，不编造条款。</div></div>
+            <div class="ck"><span class="box">✓</span><div><b>弱网可用</b>：现场端展示离线缓存与待同步，不阻塞整改。</div></div>
+            <div class="ck"><span class="box">✓</span><div><b>审计留痕</b>：复核、退回、销号、导出均有操作记录。</div></div>
+            <div class="ck"><span class="box">✓</span><div><b>可离线演示</b>：不依赖 CDN、字体服务或后端接口。</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="s9">
+        <h2><span class="dn">09</span>待确认事项</h2>
+        <p>以下内容在原型中使用了合理假设，进入开发前需客户确认：</p>
+        <table class="doc-table">
+          <thead><tr><th style="width:180px">事项</th><th>原型假设</th><th style="width:160px">需确认方</th></tr></thead>
+          <tbody>
+            <tr><td>项目与标段</td><td>S32 公路改扩建工程 · 03 标段 · K12+200—K17+200</td><td>建设单位</td></tr>
+            <tr><td>组织与角色</td><td>建设 / 监理 / 施工 / 项目公司四类，数据按标段隔离</td><td>建设单位、监理</td></tr>
+            <tr><td>隐患分级阈值</td><td>自动 0.85、人工 0.60，重大强制人工</td><td>监理、业务专家</td></tr>
+            <tr><td>规范条文</td><td>引用 JTG F90-2015、JGJ 80-2016 等，条款号为演示示意</td><td>业务专家核对现行版本</td></tr>
+            <tr><td>外部系统</td><td>无人机平台、影像系统、隐患台账、企业微信、监管平台、BIM</td><td>信息中心</td></tr>
+            <tr><td>报告模板</td><td>集团标准模板 2026 版，Word 导出</td><td>建设单位、监理</td></tr>
+            <tr><td>部署</td><td>前期云端 Token Plan，后期私有化容器部署</td><td>信息中心</td></tr>
+          </tbody>
+        </table>
+        <div class="note warn mt-14"><span class="n-ico">!</span><span>本原型中所有项目名、人员、桩号、隐患、影像与统计数字均为演示数据，不涉及真实工程信息；正式汇报前请替换为客户确认的脱敏样例。</span></div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script src="prototype.js"></script>
+</body>
+</html>

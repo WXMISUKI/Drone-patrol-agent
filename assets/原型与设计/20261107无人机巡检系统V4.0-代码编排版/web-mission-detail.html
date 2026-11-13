@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>飞行回放与影像 · 无人机工地巡视智能识别系统</title>
+<meta name="description" content="任务航迹回放、遥测数据、回传影像与影像质量检查。">
+<link rel="stylesheet" href="prototype.css">
+</head>
+<body class="app" data-role="supervisor">
+
+<aside class="sidebar">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
+        <path d="M8.4 8.4 5 5M15.6 8.4 19 5M8.4 15.6 5 19M15.6 15.6 19 19"/>
+        <rect x="8.6" y="8.6" width="6.8" height="6.8" rx="1.1"/>
+        <circle cx="4.6" cy="4.6" r="1.5"/><circle cx="19.4" cy="4.6" r="1.5"/>
+        <circle cx="4.6" cy="19.4" r="1.5"/><circle cx="19.4" cy="19.4" r="1.5"/>
+      </svg>
+    </span>
+    <span class="brand-text"><strong>无人机巡视智能体</strong><span>UAV INSPECTION OS · V4.0</span></span>
+  </a>
+  <div class="project-switch">
+    <span class="ps-icon"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 5.5 8 2l6 3.5v5L8 14l-6-3.5z"/><path d="M2 5.5 8 9l6-3.5M8 9v5"/></svg></span>
+    <span class="ps-text"><b>S32 公路改扩建工程</b><span>03 标段 · K12+200—K17+200</span></span>
+    <span class="ps-caret">▼</span>
+  </div>
+  <nav class="nav">
+    <div class="nav-label">巡视作业</div>
+    <a class="nav-item" id="nav-command" href="web-command-center.html"><span class="no">01</span>全域指挥台</a>
+    <a class="nav-item" id="nav-plan" href="web-mission-plan.html"><span class="no">02</span>任务与航线编排</a>
+    <a class="nav-item" id="nav-detail" href="web-mission-detail.html"><span class="no">03</span>飞行回放与影像</a>
+    <a class="nav-item" id="nav-review" href="web-hazard-review.html"><span class="no">04</span>AI 隐患复核<span class="nav-dot"></span></a>
+    <div class="nav-label">闭环与报告</div>
+    <a class="nav-item" id="nav-process" href="web-process-monitor.html"><span class="no">05</span>流程运行台<span class="nav-dot"></span></a>
+    <a class="nav-item" id="nav-closure" href="web-hazard-closure.html"><span class="no">06</span>整改闭环</a>
+    <a class="nav-item" id="nav-reports" href="web-reports.html"><span class="no">07</span>报告中心</a>
+    <div class="nav-label">智能支撑</div>
+    <a class="nav-item" id="nav-knowledge" href="web-knowledge.html"><span class="no">08</span>知识库与问答</a>
+    <a class="nav-item" id="nav-admin" href="web-admin.html"><span class="no">09</span>平台管理</a>
+  </nav>
+  <div class="side-foot">
+    <div class="sys-state"><span class="pulse"></span>Supervisor 正常 · 队列 0 积压</div>
+    <div class="side-user"><span class="avatar">陈</span><div><b>陈立群</b><span>监理工程师 · 03 标段</span></div></div>
+  </div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div class="crumb"><a href="index.html">原型总览</a><span class="sep">/</span><a href="web-command-center.html">全域指挥台</a><span class="sep">/</span><b>飞行回放</b></div>
+    <div class="topbar-right">
+      <label class="search"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="7" r="4.4"/><path d="m10.5 10.5 3 3"/></svg><input placeholder="搜索任务、桩号、隐患编号"><kbd>⌘K</kbd></label>
+      <div class="role-switch"><button data-role-btn="supervisor" class="is-on">监理</button><button data-role-btn="owner">建设</button><button data-role-btn="builder">施工</button></div>
+      <button class="icon-btn" aria-label="通知"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 2a3.5 3.5 0 0 1 3.5 3.5c0 3 1.2 4 1.2 4H3.3s1.2-1 1.2-4A3.5 3.5 0 0 1 8 2Z"/><path d="M6.6 12a1.5 1.5 0 0 0 2.8 0"/></svg><span class="dot"></span></button>
+      <span class="avatar">陈</span>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="page-head">
+      <div class="page-head-main">
+        <div class="kicker">YJ-20261107-06 · 右幅全域巡检 · 飞行中</div>
+        <h1>航迹、遥测与影像</h1>
+        <div class="sub">
+          <span class="dot-live"></span><span>架次执行中 · 已飞 24:18</span><span class="dot"></span>
+          <span>M350 RTK · 机巢 B 起飞</span><span class="dot"></span>
+          <span>航线 RT-03-014 · V1.2</span>
+        </div>
+      </div>
+      <div class="page-actions">
+        <button class="btn" data-toast="已请求实时画面，延迟约 1.2s。">实时画面</button>
+        <button class="btn" data-toast="飞行日志已导出（PDF + CSV）。">导出日志</button>
+        <a class="btn btn-primary" href="web-hazard-review.html">查看本架次隐患 <span class="arw">→</span></a>
+      </div>
+    </div>
+
+    <div class="grid detail-grid" data-play-scope>
+      <section class="panel flush detail-map">
+        <div class="panel-head">
+          <div class="panel-title">航迹回放</div>
+          <span class="badge badge-brand"><i></i>架次 06</span>
+          <div class="panel-tools"><span class="small muted">拖动时间轴回放</span></div>
+        </div>
+        <div class="map" style="height:390px">
+          <img src="assets/aerial-site.jpg" alt="03 标段航迹回放底图">
+          <svg class="route" viewBox="0 0 800 390" preserveAspectRatio="none" aria-hidden="true">
+            <path class="done" d="M30 330 C130 306 184 280 246 256 S340 218 400 186"/>
+            <path d="M400 186 C472 148 528 132 596 104 S700 70 772 42"/>
+            <circle cx="30" cy="330" r="5" fill="#F2F5F7" stroke="#F07B4B" stroke-width="2"/>
+            <circle cx="400" cy="186" r="6" fill="#F07B4B"/>
+            <circle class="wp" cx="400" cy="186" r="11"/>
+          </svg>
+          <div class="map-pin major" style="left:30%;top:60%">
+            <span class="pin-label">K13+420 · <b>待复核</b></span>
+            <span class="pin-dot"></span>
+          </div>
+          <div class="map-pin general" style="left:44%;top:48%">
+            <span class="pin-label">K13+760 · 已复核</span>
+            <span class="pin-dot"></span>
+          </div>
+          <div class="map-top">
+            <div class="mt-left">
+              <span class="mt-kicker">Flight Replay</span>
+              <span class="mt-title">当前位置 <span data-field="pos">K13+980</span> · 航向 <span data-field="hdg">312</span>°</span>
+              <span class="mt-meta">高度 <span data-field="alt">120</span> m · 地速 <span data-field="speed">8.4</span> m/s · 电量 <span data-field="batt">31</span>%</span>
+            </div>
+            <div class="map-tools"><button>＋</button><button>－</button><button>⤢</button></div>
+          </div>
+          <div class="map-hud">
+            <div class="h"><span>回放时刻</span><b><span data-field="time">10:22:00</span></b></div>
+            <div class="h"><span>航迹进度</span><b><span data-field="prog">67</span><em>%</em></b></div>
+            <div class="h"><span>飞行时长</span><b><span data-field="dur">24:18</span></b></div>
+            <div class="h"><span>已采集影像</span><b><span data-field="img">428</span><em>张</em></b></div>
+            <div class="h"><span>已覆盖</span><b><span data-field="area">1.82</span><em>km²</em></b></div>
+          </div>
+          <div class="map-legend">
+            <span><i style="background:#7FC2AC"></i>已飞航段</span>
+            <span><i style="background:#F07B4B"></i>计划航线</span>
+            <span><i style="background:#F2F5F7"></i>起降点</span>
+          </div>
+          <span class="map-corner tl"></span><span class="map-corner tr"></span><span class="map-corner bl"></span><span class="map-corner br"></span>
+        </div>
+        <div class="panel-body tight" style="padding:12px 14px 14px">
+          <input type="range" min="0" max="4" step="1" value="2" style="width:100%;accent-color:var(--brand)" aria-label="回放时间轴"
+            data-playback='[
+              {"time":"09:58:12","prog":"12","alt":"118","speed":"8.2","batt":"86","dur":"03:06","img":"62","area":"0.32","pos":"K12+260","hdg":"318"},
+              {"time":"10:06:40","prog":"31","alt":"120","speed":"8.5","batt":"68","dur":"11:34","img":"186","area":"0.86","pos":"K13+180","hdg":"315"},
+              {"time":"10:22:00","prog":"67","alt":"120","speed":"8.4","batt":"31","dur":"24:18","img":"428","area":"1.82","pos":"K13+980","hdg":"312"},
+              {"time":"10:31:20","prog":"84","alt":"96","speed":"7.8","batt":"24","dur":"33:38","img":"536","area":"2.28","pos":"K15+240","hdg":"298"},
+              {"time":"10:38:50","prog":"100","alt":"0","speed":"0","batt":"22","dur":"41:08","img":"612","area":"2.71","pos":"K14+800","hdg":"180"}
+            ]'>
+          <div class="row between mt-6 small muted-2">
+            <span class="mono">09:58 · 起飞</span><span class="mono">10:14 · 第一航带</span><span class="mono">10:22 · 当前</span><span class="mono">10:31 · 边坡段</span><span class="mono">10:39 · 返航</span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="col detail-side">
+        <section class="panel">
+          <div class="panel-head tight"><div class="panel-title">实时遥测</div><span class="badge badge-brand"><i></i>LIVE</span></div>
+          <div class="panel-body tight">
+            <div class="param-grid" style="grid-template-columns:repeat(2,1fr)">
+              <div class="param"><span>相对航高</span><b><span data-field="alt">120</span><em>m</em></b></div>
+              <div class="param"><span>地速</span><b><span data-field="speed">8.4</span><em>m/s</em></b></div>
+              <div class="param"><span>剩余电量</span><b><span data-field="batt">31</span><em>%</em></b></div>
+              <div class="param"><span>航向</span><b><span data-field="hdg">312</span><em>°</em></b></div>
+              <div class="param"><span>卫星数</span><b>28<em>颗</em></b></div>
+              <div class="param"><span>图传信号</span><b>良好</b></div>
+            </div>
+            <div class="note mt-10"><span class="n-ico">!</span><span><b>电量偏低：</b><span data-field="batt">31</span>%，低于 35% 提示线，系统已建议结束当前航带并返航；剩余航段可由 YJ-07 补飞。</span></div>
+            <div class="row mt-10" style="gap:8px">
+              <button class="btn btn-sm" style="flex:1" data-toast="已发送返航指令，机巢 B 已开舱待降。">一键返航</button>
+              <button class="btn btn-sm" style="flex:1" data-toast="已标记补飞段 K13+980—K14+800，将并入下一架次。">标记补飞</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head tight"><div class="panel-title">任务信息</div><a class="small link-quiet" href="web-mission-plan.html" style="margin-left:auto">航线详情</a></div>
+          <div class="panel-body tight">
+            <dl class="kv">
+              <dt>任务编号</dt><dd class="mono">YJ-20261107-06</dd>
+              <dt>桩号范围</dt><dd class="mono">K12+200—K14+800</dd>
+              <dt>航线版本</dt><dd>RT-03-014 · V1.2</dd>
+              <dt>载荷</dt><dd>可见光 2000 万</dd>
+              <dt>航高 / 速度</dt><dd>120 m / 8.4 m/s</dd>
+              <dt>重叠率</dt><dd>80% / 70%</dd>
+              <dt>飞手 / 观察员</dt><dd>王鑫 / 李昊</dd>
+            </dl>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head tight"><div class="panel-title">飞行事件</div><span class="small muted-2">6 条</span></div>
+          <div class="panel-body tight" style="max-height:200px;overflow:auto">
+            <div class="timeline">
+              <div class="tl-item done"><div class="tl-time">09:58:12</div><div class="tl-title">自动起飞</div><div class="tl-desc">机巢 B 开舱，GPS 28 颗，航向 312°</div></div>
+              <div class="tl-item done"><div class="tl-time">10:02:36</div><div class="tl-title">进入第一航带</div><div class="tl-desc">高度 120 m，开始连续拍摄</div></div>
+              <div class="tl-item done"><div class="tl-time">10:14:08</div><div class="tl-title">影像实时回传</div><div class="tl-desc">已回传 186 张，弱网重传 3 张</div></div>
+              <div class="tl-item done"><div class="tl-time">10:18:44</div><div class="tl-title">AI 识别命中</div><div class="tl-desc">K13+420 临边防护缺失，置信度 0.94</div></div>
+              <div class="tl-item active"><div class="tl-time">10:22:00</div><div class="tl-title">当前 · 第二航带</div><div class="tl-desc">地速 8.4 m/s，电量 31%</div></div>
+              <div class="tl-item"><div class="tl-time">预计 10:39</div><div class="tl-title">返航降落</div><div class="tl-desc">剩余航段转 YJ-07 补飞</div></div>
+            </div>
+          </div>
+        </section>
+      </aside>
+
+      <section class="panel flush span-8 detail-images">
+        <div class="panel-head">
+          <div class="panel-title">回传影像 <span class="panel-sub">已质检 428 / 428</span></div>
+          <div class="panel-tools">
+            <div class="segmented"><button class="is-on">全部</button><button>含隐患</button><button>待质检</button></div>
+            <a class="small link-quiet" href="web-hazard-review.html">进入复核 →</a>
+          </div>
+        </div>
+        <div class="panel-body tight">
+          <div class="grid" style="grid-template-columns:repeat(4,1fr);gap:8px">
+            <button class="evidence" style="height:122px;border:0;padding:0" data-modal="imgModal" aria-label="查看 K13+420 影像">
+              <img src="assets/aerial-closeup.jpg" alt="K13+420 临边防护缺失影像">
+              <span class="bbox" style="left:38%;top:40%;width:26%;height:34%"><span class="bbox-tag">临边防护缺失 <b>0.94</b></span></span>
+              <span class="evidence-caption"><span>K13+420 · 右幅</span><span class="mono">10:18:44</span></span>
+            </button>
+            <button class="evidence" style="height:122px;border:0;padding:0" data-modal="imgModal" aria-label="查看 K13+760 影像">
+              <img src="assets/aerial-site.jpg" alt="K13+760 墩柱外观影像">
+              <span class="bbox ai" style="left:44%;top:46%;width:22%;height:26%"><span class="bbox-tag">蜂窝麻面 <b>0.76</b></span></span>
+              <span class="evidence-caption"><span>K13+760 · 12# 墩</span><span class="mono">10:22:10</span></span>
+            </button>
+            <div class="evidence" style="height:122px">
+              <img src="assets/aerial-site.jpg" alt="K14+020 基坑影像">
+              <span class="evidence-caption"><span>K14+020 · 基坑</span><span class="mono">10:26:32</span></span>
+            </div>
+            <div class="evidence" style="height:122px">
+              <img src="assets/aerial-closeup.jpg" alt="K14+480 材料堆场影像">
+              <span class="evidence-caption"><span>K14+480 · 堆场</span><span class="mono">10:31:05</span></span>
+            </div>
+          </div>
+          <div class="row between mt-10 small muted">
+            <span>影像按 项目—标段—桩号 自动绑定，已叠加时间与位置水印</span>
+            <span>质量检查：模糊 2 张 · 过曝 1 张 · 遮挡 0 张</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel span-4 detail-archive">
+        <div class="panel-head tight"><div class="panel-title">影像归档</div><div class="panel-tools"><span class="small muted-2">按桩号</span></div></div>
+        <table class="table table-compact">
+          <thead><tr><th>桩号</th><th class="r">数量</th><th class="r">质检</th><th class="r">状态</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">K12+200</td><td class="r">36</td><td class="r">通过</td><td class="r"><span class="badge badge-closed">归档</span></td></tr>
+            <tr><td class="mono">K12+680</td><td class="r">52</td><td class="r">通过</td><td class="r"><span class="badge badge-closed">归档</span></td></tr>
+            <tr><td class="mono">K13+420</td><td class="r">48</td><td class="r">通过</td><td class="r"><span class="badge badge-pending">复核</span></td></tr>
+            <tr><td class="mono">K13+760</td><td class="r">44</td><td class="r">通过</td><td class="r"><span class="badge badge-pending">复核</span></td></tr>
+            <tr><td class="mono">K14+020</td><td class="r">61</td><td class="r">2 张模糊</td><td class="r"><span class="badge badge-draft">补拍</span></td></tr>
+          </tbody>
+        </table>
+        <div class="panel-foot"><span>原始影像存 MinIO，缩略图 CDN</span><a class="link-quiet" style="margin-left:auto" href="#" data-toast="已申请影像批量下载，需监理权限审批。">批量下载</a></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="modal-mask" id="imgModal">
+  <div class="modal wide">
+    <div class="modal-head">
+      <div><h3>影像详情 · K13+420 右幅</h3><p>DJI_20261107_101844_K13420.jpg · 5472×3648 · 10:18:44 · 相对航高 120 m</p></div>
+      <button class="x" data-close aria-label="关闭">×</button>
+    </div>
+    <div class="modal-body" style="padding:0">
+      <div class="evidence" style="height:420px">
+        <img src="assets/aerial-closeup.jpg" alt="临边防护缺失检测框">
+        <span class="bbox" style="left:38%;top:40%;width:26%;height:34%"><span class="bbox-tag">临边防护栏杆缺失 · major <b>0.94</b></span></span>
+        <div class="evidence-caption"><span>检测框由视觉服务输出，复核后可修正</span><span class="mono">IMG-20261107-00428</span></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-close>关闭</button>
+      <a class="btn btn-primary" href="web-hazard-review.html">进入隐患复核 <span class="arw">→</span></a>
+    </div>
+  </div>
+</div>
+
+<script src="prototype.js"></script>
+</body>
+</html>

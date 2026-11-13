@@ -1,0 +1,289 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>整改闭环 · 无人机工地巡视智能识别系统</title>
+<meta name="description" content="隐患整改、前后影像对比、复核销号与退回整改的完整闭环。">
+<link rel="stylesheet" href="prototype.css">
+</head>
+<body class="app" data-role="supervisor">
+
+<aside class="sidebar">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
+        <path d="M8.4 8.4 5 5M15.6 8.4 19 5M8.4 15.6 5 19M15.6 15.6 19 19"/>
+        <rect x="8.6" y="8.6" width="6.8" height="6.8" rx="1.1"/>
+        <circle cx="4.6" cy="4.6" r="1.5"/><circle cx="19.4" cy="4.6" r="1.5"/>
+        <circle cx="4.6" cy="19.4" r="1.5"/><circle cx="19.4" cy="19.4" r="1.5"/>
+      </svg>
+    </span>
+    <span class="brand-text"><strong>无人机巡视智能体</strong><span>UAV INSPECTION OS · V4.0</span></span>
+  </a>
+  <div class="project-switch">
+    <span class="ps-icon"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 5.5 8 2l6 3.5v5L8 14l-6-3.5z"/><path d="M2 5.5 8 9l6-3.5M8 9v5"/></svg></span>
+    <span class="ps-text"><b>S32 公路改扩建工程</b><span>03 标段 · K12+200—K17+200</span></span>
+    <span class="ps-caret">▼</span>
+  </div>
+  <nav class="nav">
+    <div class="nav-label">巡视作业</div>
+    <a class="nav-item" id="nav-command" href="web-command-center.html"><span class="no">01</span>全域指挥台</a>
+    <a class="nav-item" id="nav-plan" href="web-mission-plan.html"><span class="no">02</span>任务与航线编排</a>
+    <a class="nav-item" id="nav-detail" href="web-mission-detail.html"><span class="no">03</span>飞行回放与影像</a>
+    <a class="nav-item" id="nav-review" href="web-hazard-review.html"><span class="no">04</span>AI 隐患复核<span class="nav-dot"></span></a>
+    <div class="nav-label">闭环与报告</div>
+    <a class="nav-item" id="nav-process" href="web-process-monitor.html"><span class="no">05</span>流程运行台<span class="nav-dot"></span></a>
+    <a class="nav-item" id="nav-closure" href="web-hazard-closure.html"><span class="no">06</span>整改闭环</a>
+    <a class="nav-item" id="nav-reports" href="web-reports.html"><span class="no">07</span>报告中心</a>
+    <div class="nav-label">智能支撑</div>
+    <a class="nav-item" id="nav-knowledge" href="web-knowledge.html"><span class="no">08</span>知识库与问答</a>
+    <a class="nav-item" id="nav-admin" href="web-admin.html"><span class="no">09</span>平台管理</a>
+  </nav>
+  <div class="side-foot">
+    <div class="sys-state"><span class="pulse"></span>Supervisor 正常 · 队列 0 积压</div>
+    <div class="side-user"><span class="avatar">陈</span><div><b>陈立群</b><span>监理工程师 · 03 标段</span></div></div>
+  </div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div class="crumb"><a href="index.html">原型总览</a><span class="sep">/</span><span>闭环管理</span><span class="sep">/</span><b>整改闭环</b></div>
+    <div class="topbar-right">
+      <label class="search"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="7" r="4.4"/><path d="m10.5 10.5 3 3"/></svg><input placeholder="搜索任务、桩号、隐患编号"><kbd>⌘K</kbd></label>
+      <div class="role-switch"><button data-role-btn="supervisor" class="is-on">监理</button><button data-role-btn="owner">建设</button><button data-role-btn="builder">施工</button></div>
+      <button class="icon-btn" aria-label="通知"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 2a3.5 3.5 0 0 1 3.5 3.5c0 3 1.2 4 1.2 4H3.3s1.2-1 1.2-4A3.5 3.5 0 0 1 8 2Z"/><path d="M6.6 12a1.5 1.5 0 0 0 2.8 0"/></svg><span class="dot"></span></button>
+      <span class="avatar">陈</span>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="page-head">
+      <div class="page-head-main">
+        <div class="kicker">整改复核 · YH-20261104-026 · 超时前 6 小时</div>
+        <h1>深基坑临边防护栏杆缺失</h1>
+        <div class="sub">
+          <span class="mono">K14+380 · 右幅 5# 承台</span><span class="dot"></span>
+          <span class="sev sev-major">重大隐患</span><span class="dot"></span>
+          <span>责任单位：桥梁一队</span><span class="dot"></span>
+          <span>状态 <b data-closure-state>PENDING_RECHECK</b></span>
+        </div>
+      </div>
+      <div class="page-actions">
+        <button class="btn" data-toast="整改过程资料已打包下载（含照片、签到、交底记录）。">下载整改资料</button>
+        <button class="btn btn-danger" data-modal="rejectModal" data-role-show="supervisor owner">退回整改</button>
+        <button class="btn btn-teal" data-modal="closeModal" data-role-show="supervisor owner">复核通过并销号</button>
+      </div>
+    </div>
+
+    <section class="panel mb-14">
+      <div class="panel-body tight">
+        <div class="row between" style="align-items:flex-start">
+          <div class="row" style="gap:10px;flex-wrap:wrap">
+            <span class="tiny muted-2" style="letter-spacing:.1em">PROCESS INSTANCE</span>
+            <span class="mono" style="color:var(--ink-2)">PI-20261104-0026</span>
+            <span class="badge badge-ai" data-closure-state>PENDING_RECHECK</span>
+            <span class="tag tag-brand">监理复核节点</span>
+          </div>
+          <span class="small muted">整改提交 <b>2026-11-07 09:12</b> · 等待 1 小时 30 分</span>
+        </div>
+        <div class="rail mt-10" data-closure-rail>
+          <div class="rail-step done"><div class="rail-dot">✓</div><div class="rail-label">发现<br>11-04</div></div>
+          <div class="rail-step done"><div class="rail-dot">✓</div><div class="rail-label">AI 研判<br>确认重大</div></div>
+          <div class="rail-step done"><div class="rail-dot">✓</div><div class="rail-label">人工复核<br>11-04</div></div>
+          <div class="rail-step done"><div class="rail-dot">✓</div><div class="rail-label">PENDING_RECTIFY<br>派单整改</div></div>
+          <div class="rail-step active"><div class="rail-dot"></div><div class="rail-label">PENDING_RECHECK<br>整改复核</div></div>
+          <div class="rail-step"><div class="rail-dot"></div><div class="rail-label">CLOSED<br>销号</div></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="col span-8">
+        <div class="panel flush">
+          <div class="panel-head">
+            <div class="panel-title">整改前后影像对比</div>
+            <div class="panel-tools">
+              <span class="small muted-2">左：整改前 · 右：整改后</span>
+              <button class="btn btn-sm" data-toast="已叠加两次飞行的同桩号影像，配准误差 0.3 m。">影像配准</button>
+            </div>
+          </div>
+          <div class="compare" style="height:396px">
+            <img src="assets/aerial-site.jpg" alt="整改前基坑临边影像" style="filter:grayscale(.55) brightness(.72) contrast(1.06)">
+            <div class="after-wrap">
+              <img src="assets/aerial-site.jpg" alt="整改后基坑临边影像" style="object-position:70% 50%">
+            </div>
+            <span class="handle"></span>
+            <span class="cmp-tag before">整改前 · 11-04 10:26</span>
+            <span class="cmp-tag after">整改后 · 11-07 09:06</span>
+            <input type="range" min="8" max="92" value="50" aria-label="拖动对比整改前后">
+          </div>
+          <div class="panel-body tight">
+            <div class="row between">
+              <div class="small muted">整改后影像由监理独立航线拍摄，非施工方提供，避免“自证整改”。</div>
+              <div class="row" style="gap:6px">
+                <span class="tag tag-teal">栏杆已补齐</span>
+                <span class="tag tag-teal">警戒已设置</span>
+                <span class="tag">同桩号配准</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head tight">
+            <div class="panel-title">整改上报内容</div>
+            <span class="badge badge-closed"><i></i>已提交</span>
+            <div class="panel-tools"><span class="small muted-2">施工安全员 赵海峰 · 11-07 09:12</span></div>
+          </div>
+          <div class="panel-body">
+            <div class="grid" style="grid-template-columns:1.3fr 1fr;gap:14px">
+              <div>
+                <div class="tiny muted-2" style="letter-spacing:.08em">整改说明</div>
+                <p class="small mt-6" style="line-height:1.75;color:var(--ink-2)">
+                  已按整改通知单要求补齐 5# 承台基坑临边防护栏杆，长度 32m，上杆高度 1.2m、立杆间距 1.8m，设置挡脚板与密目网；坑边 1.5m 范围内堆土已清运，现场增设警戒线与警示牌。整改完成后由项目部安全总监复核并留存影像。
+                </p>
+                <div class="grid mt-14" style="grid-template-columns:repeat(3,1fr);gap:8px">
+                  <div class="evidence" style="height:86px"><img src="assets/aerial-closeup.jpg" alt="整改照片 1"><span class="evidence-caption" style="padding:14px 6px 5px;font-size:8px">栏杆全貌</span></div>
+                  <div class="evidence" style="height:86px"><img src="assets/aerial-closeup.jpg" alt="整改照片 2" style="object-position:70% 40%"><span class="evidence-caption" style="padding:14px 6px 5px;font-size:8px">立杆间距</span></div>
+                  <div class="evidence" style="height:86px"><img src="assets/aerial-site.jpg" alt="整改照片 3" style="object-position:30% 60%"><span class="evidence-caption" style="padding:14px 6px 5px;font-size:8px">堆土清运</span></div>
+                </div>
+              </div>
+              <div>
+                <div class="tiny muted-2" style="letter-spacing:.08em">整改信息</div>
+                <dl class="kv mt-6">
+                  <dt>整改单位</dt><dd>桥梁一队</dd>
+                  <dt>整改负责人</dt><dd>赵海峰</dd>
+                  <dt>整改耗时</dt><dd>2 天 22 小时</dd>
+                  <dt>整改费用</dt><dd>¥ 8,600</dd>
+                  <dt>交底记录</dt><dd><a class="link" href="#" data-toast="已打开班组交底签到记录。">已上传 · 12 人</a></dd>
+                  <dt>关联工单</dt><dd class="mono">GD-20261104-031</dd>
+                </dl>
+                <div class="note teal mt-10"><span class="n-ico">✓</span><span>整改资料齐全：说明、照片、交底、签到四项均已上传，满足复核前置条件。</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head tight"><div class="panel-title">复核检查项 <span class="panel-sub">按规范逐项核对</span></div><span class="tag tag-teal">4 / 4 通过</span></div>
+          <table class="table table-compact">
+            <thead><tr><th style="width:36px">#</th><th>检查项</th><th>判定标准</th><th style="width:96px">影像/资料</th><th style="width:72px">结论</th></tr></thead>
+            <tbody>
+              <tr><td class="mono muted-2">01</td><td class="t-main">防护栏杆高度</td><td class="small muted">上杆 1.2m，中杆 0.6m，挡脚板 ≥180mm</td><td><a class="link" href="#" data-toast="已定位到栏杆高度核对影像。">IMG-0906</a></td><td><span class="badge badge-closed">符合</span></td></tr>
+              <tr><td class="mono muted-2">02</td><td class="t-main">立杆间距与固定</td><td class="small muted">立杆间距 ≤2m，底部固定牢固</td><td><a class="link" href="#" data-toast="已定位到立杆间距核对影像。">IMG-0908</a></td><td><span class="badge badge-closed">符合</span></td></tr>
+              <tr><td class="mono muted-2">03</td><td class="t-main">坑边堆载</td><td class="small muted">坑边 1.5m 范围内无堆土、无材料</td><td><a class="link" href="#" data-toast="已定位到堆载核对影像。">IMG-0912</a></td><td><span class="badge badge-closed">符合</span></td></tr>
+              <tr><td class="mono muted-2">04</td><td class="t-main">警戒与标识</td><td class="small muted">设置警戒线、警示牌，夜间反光标识</td><td><a class="link" href="#" data-toast="已定位到警戒标识核对影像。">IMG-0915</a></td><td><span class="badge badge-closed">符合</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <aside class="col span-4">
+        <section class="panel">
+          <div class="panel-head tight"><div class="panel-title">隐患档案</div><span class="badge badge-major">重大</span></div>
+          <div class="panel-body tight">
+            <dl class="kv">
+              <dt>隐患编号</dt><dd class="mono">YH-20261104-026</dd>
+              <dt>发现时间</dt><dd class="mono">2026-11-04 10:26</dd>
+              <dt>发现方式</dt><dd>无人机巡视 · YJ-03</dd>
+              <dt>位置</dt><dd class="mono">K14+380 · 右幅</dd>
+              <dt>坐标</dt><dd class="mono">30.01941, 121.44302</dd>
+              <dt>AI 置信度</dt><dd>0.96</dd>
+              <dt>规范依据</dt><dd class="small">JTG F90-2015 §4.3.7</dd>
+              <dt>整改时限</dt><dd>2026-11-07 18:00</dd>
+            </dl>
+            <div class="progress mt-10"><i style="width:82%"></i></div>
+            <div class="row between tiny muted-2" style="margin-top:4px"><span>11-04 派单</span><span style="color:var(--amber)">剩余 6 小时</span><span>11-07 18:00</span></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head tight"><div class="panel-title">闭环时间线</div><span class="small muted-2">6 个节点</span></div>
+          <div class="panel-body tight">
+            <div class="timeline">
+              <div class="tl-item done"><div class="tl-time">11-04 10:26</div><div class="tl-title">无人机发现</div><div class="tl-desc">YJ-03 架次 · 视觉识别置信度 0.96</div></div>
+              <div class="tl-item done"><div class="tl-time">11-04 10:31</div><div class="tl-title">AI 研判 · 重大隐患</div><div class="tl-desc">强制转人工复核，等待 12 分钟</div></div>
+              <div class="tl-item done"><div class="tl-time">11-04 10:43</div><div class="tl-title">监理确认并派单</div><div class="tl-desc">陈立群 · 工单 GD-20261104-031 · 时限 72h</div></div>
+              <div class="tl-item done"><div class="tl-time">11-05 14:20</div><div class="tl-title">施工签收</div><div class="tl-desc">桥梁一队 · 赵海峰 · 已读并承诺整改</div></div>
+              <div class="tl-item done"><div class="tl-time">11-07 09:12</div><div class="tl-title">整改上报</div><div class="tl-desc">上传 6 张照片、交底与签到记录</div></div>
+              <div class="tl-item active"><div class="tl-time">11-07 09:16</div><div class="tl-title">监理复核中</div><div class="tl-desc">当前节点 · 通过后写入销号台账</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head tight"><div class="panel-title">复核结论</div><span class="small muted-2">需填写意见</span></div>
+          <div class="panel-body tight">
+            <div class="field"><label>复核意见 <span class="req">*</span></label><textarea class="textarea" rows="3" placeholder="请填写复核意见，通过或退回均需留痕。"></textarea></div>
+            <div class="stack-6 mt-10">
+              <label class="check"><input type="checkbox" checked><span>已核对整改前后影像与现场资料<small>核对记录写入审计日志</small></span></label>
+              <label class="check"><input type="checkbox"><span>需现场抽检后再销号<small>将生成监理现场复核任务</small></span></label>
+            </div>
+            <div class="row mt-10" style="gap:8px">
+              <button class="btn btn-block" data-modal="rejectModal" data-role-show="supervisor owner">退回整改</button>
+              <button class="btn btn-teal btn-block" data-modal="closeModal" data-role-show="supervisor owner">通过并销号</button>
+            </div>
+            <div class="note mt-10"><span class="n-ico">i</span><span>销号后隐患状态不可逆，如需重开将生成新的隐患记录并关联原编号。</span></div>
+          </div>
+        </section>
+      </aside>
+
+      <section class="panel flush span-12">
+        <div class="panel-head tight"><div class="panel-title">同区域历史隐患 <span class="panel-sub">K14+380 附近 200m</span></div><div class="panel-tools"><a class="small link-quiet" href="web-hazard-review.html">查看全部</a></div></div>
+        <table class="table table-compact">
+          <thead><tr><th style="width:128px">隐患编号</th><th>隐患描述</th><th style="width:90px">发现时间</th><th style="width:70px">级别</th><th style="width:100px">状态</th><th style="width:110px">整改时长</th><th style="width:50px"></th></tr></thead>
+          <tbody>
+            <tr><td class="id">YH-20261022-009</td><td class="t-main">基坑临边堆载超限</td><td class="mono">10-22</td><td><span class="sev sev-major">重大</span></td><td><span class="badge badge-closed">已销号</span></td><td>3 天 4 小时</td><td><a class="btn btn-sm btn-quiet" href="#">查看</a></td></tr>
+            <tr><td class="id">YH-20261009-031</td><td class="t-main">承台基坑排水不畅</td><td class="mono">10-09</td><td><span class="sev sev-general">一般</span></td><td><span class="badge badge-closed">已销号</span></td><td>1 天 8 小时</td><td><a class="btn btn-sm btn-quiet" href="#">查看</a></td></tr>
+            <tr><td class="id">YH-20260918-014</td><td class="t-main">基坑周边未设警戒</td><td class="mono">09-18</td><td><span class="sev sev-general">一般</span></td><td><span class="badge badge-closed">已销号</span></td><td>2 天 1 小时</td><td><a class="btn btn-sm btn-quiet" href="#">查看</a></td></tr>
+          </tbody>
+        </table>
+        <div class="panel-foot"><span>同一区域 90 天内 3 次同类问题，已触发“重复隐患”提示，建议纳入重点巡查。</span><a class="link-quiet" style="margin-left:auto" href="#" data-toast="已将该区域加入重点巡查清单。">加入重点巡查</a></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="modal-mask" id="closeModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div><h3>复核通过并销号</h3><p>销号后工单关闭，隐患进入已闭环台账，纳入周报统计。</p></div>
+      <button class="x" data-close aria-label="关闭">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="note teal"><span class="n-ico">✓</span><span>4 项复核检查全部通过，整改前后影像已配准，资料齐全。</span></div>
+      <div class="field mt-14"><label>复核意见 <span class="req">*</span></label><textarea class="textarea" rows="3">整改到位，栏杆高度、立杆间距符合规范，坑边堆载已清运，同意销号。</textarea></div>
+      <label class="check mt-10"><input type="checkbox" checked><span>以监理身份签发，确认承担复核责任<small>签发人：陈立群 · 2026-11-07 10:44 · 操作留痕</small></span></label>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-teal" data-close data-toast="复核通过，YH-20261104-026 已销号并写入闭环台账。" data-close-hazard>确认销号</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-mask" id="rejectModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div><h3>退回整改</h3><p>流程回到 PENDING_RECTIFY，整改时限重新计算。</p></div>
+      <button class="x" data-close aria-label="关闭">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>退回原因 <span class="req">*</span></label>
+        <select class="select"><option>防护栏杆高度不足</option><option>立杆间距超标</option><option>坑边堆载未清运</option><option>整改照片与现场不符</option><option>其他</option></select>
+      </div>
+      <div class="field mt-10"><label>退回说明 <span class="req">*</span></label><textarea class="textarea" rows="3" placeholder="请具体说明不通过项，便于施工方一次性整改到位。"></textarea></div>
+      <div class="note warn mt-14"><span class="n-ico">!</span><span>退回将通知施工安全员与项目经理；连续 2 次退回自动升级至建设单位。</span></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-danger" data-close data-toast="已退回整改，流程回到 PENDING_RECTIFY，时限重新计算。">确认退回</button>
+    </div>
+  </div>
+</div>
+
+<script src="prototype.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,389 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 隐患复核 · 无人机工地巡视智能识别系统</title>
+<meta name="description" content="原图、检测框、规范依据与置信度并排呈现，完成重大隐患的人工复核闸门。">
+<link rel="stylesheet" href="prototype.css">
+</head>
+<body class="app" data-role="supervisor">
+
+<aside class="sidebar">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
+        <path d="M8.4 8.4 5 5M15.6 8.4 19 5M8.4 15.6 5 19M15.6 15.6 19 19"/>
+        <rect x="8.6" y="8.6" width="6.8" height="6.8" rx="1.1"/>
+        <circle cx="4.6" cy="4.6" r="1.5"/><circle cx="19.4" cy="4.6" r="1.5"/>
+        <circle cx="4.6" cy="19.4" r="1.5"/><circle cx="19.4" cy="19.4" r="1.5"/>
+      </svg>
+    </span>
+    <span class="brand-text"><strong>无人机巡视智能体</strong><span>UAV INSPECTION OS · V4.0</span></span>
+  </a>
+  <div class="project-switch">
+    <span class="ps-icon"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 5.5 8 2l6 3.5v5L8 14l-6-3.5z"/><path d="M2 5.5 8 9l6-3.5M8 9v5"/></svg></span>
+    <span class="ps-text"><b>S32 公路改扩建工程</b><span>03 标段 · K12+200—K17+200</span></span>
+    <span class="ps-caret">▼</span>
+  </div>
+  <nav class="nav">
+    <div class="nav-label">巡视作业</div>
+    <a class="nav-item" id="nav-command" href="web-command-center.html"><span class="no">01</span>全域指挥台</a>
+    <a class="nav-item" id="nav-plan" href="web-mission-plan.html"><span class="no">02</span>任务与航线编排</a>
+    <a class="nav-item" id="nav-detail" href="web-mission-detail.html"><span class="no">03</span>飞行回放与影像</a>
+    <a class="nav-item" id="nav-review" href="web-hazard-review.html"><span class="no">04</span>AI 隐患复核<span class="nav-dot"></span></a>
+    <div class="nav-label">闭环与报告</div>
+    <a class="nav-item" id="nav-process" href="web-process-monitor.html"><span class="no">05</span>流程运行台<span class="nav-dot"></span></a>
+    <a class="nav-item" id="nav-closure" href="web-hazard-closure.html"><span class="no">06</span>整改闭环</a>
+    <a class="nav-item" id="nav-reports" href="web-reports.html"><span class="no">07</span>报告中心</a>
+    <div class="nav-label">智能支撑</div>
+    <a class="nav-item" id="nav-knowledge" href="web-knowledge.html"><span class="no">08</span>知识库与问答</a>
+    <a class="nav-item" id="nav-admin" href="web-admin.html"><span class="no">09</span>平台管理</a>
+  </nav>
+  <div class="side-foot">
+    <div class="sys-state"><span class="pulse"></span>Supervisor 正常 · 队列 0 积压</div>
+    <div class="side-user"><span class="avatar">陈</span><div><b>陈立群</b><span>监理工程师 · 03 标段</span></div></div>
+  </div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div class="crumb"><a href="index.html">原型总览</a><span class="sep">/</span><a href="web-command-center.html">全域指挥台</a><span class="sep">/</span><b>AI 隐患复核</b></div>
+    <div class="topbar-right">
+      <label class="search"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="7" r="4.4"/><path d="m10.5 10.5 3 3"/></svg><input placeholder="搜索任务、桩号、隐患编号"><kbd>⌘K</kbd></label>
+      <div class="role-switch"><button data-role-btn="supervisor" class="is-on">监理</button><button data-role-btn="owner">建设</button><button data-role-btn="builder">施工</button></div>
+      <button class="icon-btn" aria-label="通知"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 2a3.5 3.5 0 0 1 3.5 3.5c0 3 1.2 4 1.2 4H3.3s1.2-1 1.2-4A3.5 3.5 0 0 1 8 2Z"/><path d="M6.6 12a1.5 1.5 0 0 0 2.8 0"/></svg><span class="dot"></span></button>
+      <span class="avatar">陈</span>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="page-head">
+      <div class="page-head-main">
+        <div class="kicker">TASK YJ-20261107-06 · 复核队列 4 / 12</div>
+        <h1>墩柱作业面临边防护栏杆缺失</h1>
+        <div class="sub">
+          <span class="mono">YH-20261107-018</span><span class="dot"></span>
+          <span class="sev sev-major">重大隐患</span><span class="dot"></span>
+          <span>K13+420 · 右幅 12# 墩</span><span class="dot"></span>
+          <span>AI 置信度 <b class="num">0.94</b></span>
+        </div>
+      </div>
+      <div class="page-actions">
+        <button class="btn" data-toast="已生成该隐患的分享链接，24 小时内有效。">分享</button>
+        <button class="btn" data-modal="expertModal">转专家</button>
+        <a class="btn btn-quiet" href="web-command-center.html">退出复核</a>
+      </div>
+    </div>
+
+    <section class="panel mb-10">
+      <div class="panel-body tight">
+        <div class="row between" style="align-items:flex-start">
+          <div class="row" style="gap:10px;flex-wrap:wrap">
+            <span class="tiny muted-2" style="letter-spacing:.1em">PROCESS INSTANCE</span>
+            <span class="mono" style="color:var(--ink-2)">PI-20261107-0042</span>
+            <span class="badge badge-pending" data-instance-state>PENDING_HUMAN_REVIEW</span>
+            <span class="tag tag-brand">人工闸门 · 不可绕过</span>
+          </div>
+          <span class="small muted">守卫条件：<b style="color:var(--ink-2)">level == major → 强制人工复核</b> · 已等待 20 分钟</span>
+        </div>
+        <div class="rail mt-10" data-verdict-rail>
+          <div class="rail-step done"><div class="rail-dot">✓</div><div class="rail-label">INIT<br>数据校验</div></div>
+          <div class="rail-step done"><div class="rail-dot">✓</div><div class="rail-label">AI_ANALYZING<br>Worker 研判</div></div>
+          <div class="rail-step active"><div class="rail-dot"></div><div class="rail-label">PENDING_HUMAN_REVIEW<br>人工复核</div></div>
+          <div class="rail-step"><div class="rail-dot"></div><div class="rail-label">PENDING_RECTIFY<br>待整改</div></div>
+          <div class="rail-step"><div class="rail-dot"></div><div class="rail-label">PENDING_RECHECK<br>待复核</div></div>
+          <div class="rail-step"><div class="rail-dot"></div><div class="rail-label">CLOSED<br>已销号</div></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="col span-8">
+        <div class="panel flush">
+          <div class="panel-head">
+            <div class="panel-title">证据影像 <span class="panel-sub">IMG-20261107-00428</span></div>
+            <div class="panel-tools">
+              <span class="small muted-2">原图 · 5472×3648</span>
+              <button class="btn btn-sm" data-toast="已切换为原图无标注视图。">原图</button>
+              <button class="btn btn-sm" data-toast="已打开历史同期影像对比。">对比</button>
+            </div>
+          </div>
+          <div class="evidence" style="height:430px">
+            <img src="assets/aerial-closeup.jpg" alt="K13+420 墩柱作业面临边防护缺失原图">
+            <span class="bbox" style="left:36%;top:41%;width:27%;height:35%">
+              <span class="bbox-tag">临边防护缺失 · major <b>0.94</b></span>
+            </span>
+            <span class="bbox ai" style="left:49%;top:57%;width:8%;height:17%">
+              <span class="bbox-tag">person <b>0.97</b></span>
+            </span>
+            <span class="bbox ai" style="left:69%;top:47%;width:9%;height:14%">
+              <span class="bbox-tag">person <b>0.91</b></span>
+            </span>
+            <div class="evidence-tools"><button>＋</button><button>－</button><button>⤢</button><button>⟲</button></div>
+            <div class="evidence-caption">
+              <span>2026-11-07 10:18:44 · K13+420 右幅 · 航高 120 m · 检测框 3 个</span>
+              <span class="mono">DJI_20261107_101844_K13420.jpg</span>
+            </div>
+          </div>
+          <div class="panel-body tight">
+            <div class="row" style="gap:8px;overflow:auto">
+              <button class="evidence" style="width:104px;height:66px;flex:none;border:2px solid var(--brand)">
+                <img src="assets/aerial-closeup.jpg" alt="证据帧 1">
+                <span class="evidence-caption" style="padding:12px 6px 4px;font-size:8px">10:18:44</span>
+              </button>
+              <button class="evidence" style="width:104px;height:66px;flex:none;border:1px solid var(--line)">
+                <img src="assets/aerial-closeup.jpg" alt="证据帧 2" style="object-position:30% 40%">
+                <span class="evidence-caption" style="padding:12px 6px 4px;font-size:8px">10:18:46</span>
+              </button>
+              <button class="evidence" style="width:104px;height:66px;flex:none;border:1px solid var(--line)">
+                <img src="assets/aerial-closeup.jpg" alt="证据帧 3" style="object-position:70% 30%">
+                <span class="evidence-caption" style="padding:12px 6px 4px;font-size:8px">10:18:49</span>
+              </button>
+              <button class="evidence" style="width:104px;height:66px;flex:none;border:1px solid var(--line)">
+                <img src="assets/aerial-site.jpg" alt="证据帧 4" style="object-position:40% 60%">
+                <span class="evidence-caption" style="padding:12px 6px 4px;font-size:8px">10:19:02</span>
+              </button>
+              <div class="small muted" style="padding:0 6px;max-width:210px;line-height:1.6">
+                同一目标连续 4 帧命中，轨迹一致，排除单帧误检。证据帧随报告归档。
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head tight">
+            <div class="panel-title">视觉检测原始输出</div>
+            <span class="badge badge-ai">hazard-vision v2.3.1</span>
+            <div class="panel-tools"><span class="small muted-2">推理 860 ms · 输入 428 张</span></div>
+          </div>
+          <table class="table table-compact">
+            <thead><tr><th style="width:34px">#</th><th>检测类别</th><th>框选区域</th><th style="width:80px">置信度</th><th style="width:90px">与研判关系</th><th style="width:70px">状态</th></tr></thead>
+            <tbody>
+              <tr><td class="mono muted-2">01</td><td class="t-main">临边防护缺失 / no_guardrail</td><td class="mono">x 36% y 41% w 27% h 35%</td><td><span class="num">0.94</span></td><td class="small">主隐患</td><td><span class="badge badge-pending">已确认</span></td></tr>
+              <tr><td class="mono muted-2">02</td><td class="t-main">作业人员 / person</td><td class="mono">x 49% y 57% w 8% h 17%</td><td><span class="num">0.97</span></td><td class="small">危险暴露</td><td><span class="badge badge-closed">有效</span></td></tr>
+              <tr><td class="mono muted-2">03</td><td class="t-main">作业人员 / person</td><td class="mono">x 69% y 47% w 9% h 14%</td><td><span class="num">0.91</span></td><td class="small">危险暴露</td><td><span class="badge badge-closed">有效</span></td></tr>
+              <tr><td class="mono muted-2">04</td><td class="t-main">安全带 / harness</td><td class="mono">x 52% y 61% w 5% h 8%</td><td><span class="num">0.61</span></td><td class="small">无法确认</td><td><span class="badge badge-draft">忽略</span></td></tr>
+            </tbody>
+          </table>
+          <div class="panel-foot"><span>视觉结果仅作为研判输入，不直接入库；低置信类别已按规则过滤。</span><a class="link-quiet" style="margin-left:auto" href="#" data-toast="检测框已在影像上高亮。">在影像中定位</a></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head tight">
+            <div class="panel-title">相似历史案例与重复隐患</div>
+            <span class="tag tag-blue">案例库 2 条</span>
+          </div>
+          <div class="list">
+            <div class="list-item">
+              <span class="tag tag-red" style="flex:none;margin-top:2px">重大</span>
+              <div class="li-main">
+                <div class="li-title">2025-09 · 02 标段盖梁作业面临边防护缺失</div>
+                <div class="li-meta"><span>整改 3 天</span><span>责任单位：路基二队</span><span>相似度 0.91</span></div>
+                <div class="small muted mt-6">现场复核确认后停工整改，补齐栏杆并增设水平安全绳；该案例已进入提示词 few-shot。</div>
+              </div>
+              <a class="btn btn-sm" style="flex:none" href="#" data-toast="已打开案例详情。">查看</a>
+            </div>
+            <div class="list-item">
+              <span class="tag tag-red" style="flex:none;margin-top:2px">重大</span>
+              <div class="li-main">
+                <div class="li-title">2026-03 · 01 标段防护栏杆被擅自拆除</div>
+                <div class="li-meta"><span>整改 5 天</span><span>重复违规</span><span>相似度 0.86</span></div>
+                <div class="small muted mt-6">同类问题在 30 天内重复出现，系统已将该班组列入重点抽查名单。</div>
+              </div>
+              <a class="btn btn-sm" style="flex:none" href="#" data-toast="已打开案例详情。">查看</a>
+            </div>
+            <div class="list-item" style="background:var(--surface-2)">
+              <span class="tag tag-brand" style="flex:none;margin-top:2px">归并</span>
+              <div class="li-main">
+                <div class="li-title">与 YH-20261103-011 判定为同一区域同类隐患</div>
+                <div class="li-meta"><span>K13+420 右幅</span><span>间距 6 m</span><span>首次发现 11-03</span></div>
+              </div>
+              <span class="badge badge-pending" style="flex:none">合并计数</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel flush">
+          <div class="panel-head tight">
+            <div class="panel-title">同架次其他隐患 <span class="panel-sub">待复核队列</span></div>
+            <span class="tag">4 条</span>
+            <div class="panel-tools"><a class="small link-quiet" href="web-command-center.html">返回队列</a></div>
+          </div>
+          <table class="table table-compact">
+            <thead><tr><th style="width:104px">隐患编号</th><th>隐患</th><th style="width:104px">位置</th><th style="width:66px">置信度</th><th style="width:60px">级别</th><th style="width:64px"></th></tr></thead>
+            <tbody>
+              <tr><td class="id">YH-…-021</td><td class="t-main">深基坑临边堆载超限</td><td class="mono">K14+020</td><td class="num">0.89</td><td><span class="sev sev-major">重大</span></td><td><a class="btn btn-sm btn-quiet" href="#" data-toast="已切换到 YH-20261107-021，当前页需先完成本次裁决。">复核</a></td></tr>
+              <tr><td class="id">YH-…-019</td><td class="t-main">墩柱混凝土蜂窝麻面</td><td class="mono">K13+760</td><td class="num">0.76</td><td><span class="sev sev-general">一般</span></td><td><a class="btn btn-sm btn-quiet" href="#" data-toast="已切换到 YH-20261107-019，当前页需先完成本次裁决。">复核</a></td></tr>
+              <tr><td class="id">YH-…-017</td><td class="t-main">取土场裸土未覆盖</td><td class="mono">K12+680</td><td class="num">0.91</td><td><span class="sev sev-general">一般</span></td><td><a class="btn btn-sm btn-quiet" href="web-hazard-closure.html">跟踪</a></td></tr>
+              <tr><td class="id">YH-…-014</td><td class="t-main">作业人员未系挂安全带</td><td class="mono">K13+760</td><td class="num">0.83</td><td><span class="sev sev-general">一般</span></td><td><a class="btn btn-sm btn-quiet" href="#" data-toast="已切换到 YH-20261107-014。">复核</a></td></tr>
+            </tbody>
+          </table>
+          <div class="panel-foot"><span>同架次隐患按桩号排序，复核顺序不影响流程实例。</span></div>
+        </div>
+      </section>
+
+      <aside class="col span-4">
+        <section class="panel">
+          <div class="panel-head tight">
+            <div class="panel-title">AI 研判结论</div>
+            <span class="badge badge-pending" data-instance-state>PENDING_HUMAN_REVIEW</span>
+          </div>
+          <div class="panel-body tight">
+            <div class="row between" style="align-items:flex-start">
+              <div>
+                <div class="tiny muted-2" style="letter-spacing:.08em">HAZARD NAME</div>
+                <div class="strong" style="font-size:13px;margin-top:2px">临边防护栏杆缺失</div>
+              </div>
+              <span class="sev sev-major">重大</span>
+            </div>
+            <div class="mt-10">
+              <div class="row between tiny muted-2"><span>大模型研判置信度</span><span class="num" style="color:var(--ink-2)">0.94</span></div>
+              <div class="progress mt-6"><i style="width:94%"></i></div>
+              <div class="row between tiny muted-2" style="margin-top:4px"><span>0.60 人工阈值</span><span>0.85 自动阈值</span></div>
+            </div>
+            <p class="small mt-10" style="color:var(--ink-2);line-height:1.7">
+              作业平台外侧临边防护栏杆缺失，缺失长度约 <b>18 m</b>；作业面距地面 <b>12.6 m</b>，画面内 2 名作业人员活动，构成高处坠落重大风险。视觉检测 4 帧连续命中，排除单帧误检。
+            </p>
+            <div class="divider"></div>
+            <dl class="kv">
+              <dt>位置</dt><dd class="mono">K13+420 · 右幅 12# 墩</dd>
+              <dt>坐标</dt><dd class="mono">30.01762, 121.43891</dd>
+              <dt>发现时间</dt><dd class="mono">2026-11-07 10:18:44</dd>
+              <dt>责任单位</dt><dd>路基二队（施工总包）</dd>
+              <dt>当前状态</dt><dd><span class="badge badge-pending">待人工复核</span></dd>
+            </dl>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head tight">
+            <div class="panel-title">规范依据 <span class="panel-sub">RAG 检索 3 条</span></div>
+            <div class="panel-tools"><span class="small muted-2">rerank 后</span></div>
+          </div>
+          <div class="panel-body tight">
+            <div class="cite">
+              <div class="cite-head">企业《隐患分级标准（2026 版）》§3.2 <span class="score">0.95</span></div>
+              <div class="cite-body">高处作业面临边无防护、且作业面有人活动的，判定为 <b>重大隐患</b>，须立即停工并履行监理复核程序。</div>
+            </div>
+            <div class="cite">
+              <div class="cite-head">《公路工程施工安全技术规范》JTG F90-2015 §4.3.7 <span class="score">0.92</span></div>
+              <div class="cite-body">临边作业应设置防护栏杆，上杆高度不低于 <b>1.2 m</b>，并设置中杆与挡脚板；防护设施不得擅自拆除。</div>
+            </div>
+            <div class="cite teal">
+              <div class="cite-head">《建筑施工高处作业安全技术规范》JGJ 80-2016 §4.1.2 <span class="score">0.88</span></div>
+              <div class="cite-body">临边防护栏杆立杆间距不应大于 <b>2 m</b>，防护栏杆应能承受任何方向 1 kN 的外力。</div>
+            </div>
+            <div class="note mt-10"><span class="n-ico">i</span><span>条文为原型演示引用，正式交付前需由业务专家核对现行版本与条款号。</span></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head tight"><div class="panel-title">处置建议</div><span class="tag tag-brand">Worker 生成</span></div>
+          <div class="panel-body tight">
+            <ol class="stack-6" style="font-size:11px;line-height:1.65;color:var(--ink-2);list-style:decimal;padding-left:16px">
+              <li>立即停止 12# 墩盖梁作业面高处作业，撤离无关人员。</li>
+              <li>设置临时警戒与水平安全绳，2 小时内完成临时防护。</li>
+              <li>48 小时内按规范补齐栏杆（上杆 1.2 m、立杆间距 ≤2 m），提交整改前后影像。</li>
+              <li>对班组开展临边防护专项交底，留存签到与交底记录。</li>
+            </ol>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head tight">
+            <div class="panel-title">复核裁决</div>
+            <span class="small muted-2">当前角色：<b id="roleLabel">监理工程师</b></span>
+          </div>
+          <div class="panel-body tight">
+            <div class="note danger"><span class="n-ico">!</span><span><b>重大隐患：</b>确认后自动生成整改工单并推送施工安全员；系统不替代法定审批与签字，现场复核记录需同步上传。</span></div>
+            <div class="stack-6 mt-10">
+              <button class="btn btn-primary btn-block btn-lg" data-modal="confirmModal" data-review-action data-role-show="supervisor owner">确认隐患并派发整改 <span class="arw">→</span></button>
+              <div class="row" style="gap:8px">
+                <button class="btn btn-block" data-modal="falseModal" data-review-action data-role-show="supervisor owner">标记误报</button>
+                <button class="btn btn-block" data-verdict="uncertain" data-review-action data-role-show="supervisor owner">需现场核实</button>
+              </div>
+              <div class="note" data-role-show="builder"><span class="n-ico">i</span><span>施工安全员无复核权限，仅可查看与本标段相关的隐患与整改工单。</span></div>
+            </div>
+            <div class="divider"></div>
+            <div class="trace">
+              <div class="trace-item ok"><div class="trace-time">10:18:44</div><div class="trace-title">视觉识别命中</div><div class="trace-meta">hazard-vision v2.3.1 · 860 ms · 4 帧连续</div></div>
+              <div class="trace-item ok"><div class="trace-time">10:18:52</div><div class="trace-title">RAG 检索 + LLM 研判</div><div class="trace-meta">4 部规范 / 12 条案例 → Qwen-Plus · 18.6 s · 3,842 tokens</div></div>
+              <div class="trace-item ok"><div class="trace-time">10:18:58</div><div class="trace-title">JSON 校验通过</div><div class="trace-meta">schema HazardResult · 重试 0 次</div></div>
+              <div class="trace-item run"><div class="trace-time">10:22:10</div><div class="trace-title">进入人工复核闸门</div><div class="trace-meta">guard: level == major → 强制人工</div></div>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<div class="modal-mask" id="confirmModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div><h3>确认重大隐患并派发整改</h3><p>确认后将创建整改工单，流程进入 PENDING_RECTIFY。</p></div>
+      <button class="x" data-close aria-label="关闭">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="note danger"><span class="n-ico">!</span><span>重大隐患须完成现场复核。请确认已到场核实，或勾选“先行派单、边整改边复核”。</span></div>
+      <div class="form-grid mt-14">
+        <div class="field"><label>责任单位 <span class="req">*</span></label><select class="select"><option>路基二队（施工总包）</option><option>桥梁一队</option><option>指定其他单位</option></select></div>
+        <div class="field"><label>整改时限 <span class="req">*</span></label><select class="select"><option>48 小时（重大隐患默认）</option><option>24 小时（加急）</option><option>72 小时</option></select></div>
+        <div class="field span2"><label>复核意见 <span class="req">*</span></label><textarea class="textarea" rows="3">现场确认防护栏杆缺失约 18m，作业面有人活动，同意按重大隐患处置，立即停工整改。</textarea></div>
+        <div class="field span2">
+          <label>现场复核方式</label>
+          <div class="stack-6">
+            <label class="check"><input type="checkbox" checked><span>已到场核实（上传定位与照片）<small>复核记录将写入审计日志，作为履职举证材料</small></span></label>
+            <label class="check"><input type="checkbox"><span>先行派单，边整改边复核<small>需在 24 小时内补齐现场复核记录</small></span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-primary" data-verdict="confirm" data-close>确认并派单</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-mask" id="falseModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div><h3>标注误报</h3><p>误报样本将回流至模型优化队列，并计入准确率统计。</p></div>
+      <button class="x" data-close aria-label="关闭">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>误报原因 <span class="req">*</span></label>
+        <select class="select"><option>遮挡导致误判</option><option>光影/阴影干扰</option><option>非隐患对象（如临时围挡）</option><option>重复上报</option><option>其他</option></select>
+      </div>
+      <div class="field mt-10"><label>说明</label><textarea class="textarea" rows="3" placeholder="请简要说明判断依据，便于坏例分类与提示词优化。"></textarea></div>
+      <div class="note warn mt-14"><span class="n-ico">!</span><span>误报关闭同样需要留痕。系统会保留原图、检测框与操作记录，支持事后审计。</span></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-danger" data-verdict="reject" data-close>确认误报并关闭</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-mask" id="expertModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div><h3>转专家复核</h3><p>流程将保持 PENDING_HUMAN_REVIEW，并通知结构专业专家。</p></div>
+      <button class="x" data-close aria-label="关闭">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>专家</label><select class="select"><option>周敏 · 结构专业总工</option><option>王振宇 · 建设单位安全负责人</option></select></div>
+      <div class="field mt-10"><label>转办说明</label><textarea class="textarea" rows="3">涉及盖梁高处作业，建议结构专业会同一并确认临时支撑与防护方案。</textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-primary" data-close data-toast="已转专家复核，流程仍停留在 PENDING_HUMAN_REVIEW。">确认转办</button>
+    </div>
+  </div>
+</div>
+
+<script src="prototype.js"></script>
+</body>
+</html>

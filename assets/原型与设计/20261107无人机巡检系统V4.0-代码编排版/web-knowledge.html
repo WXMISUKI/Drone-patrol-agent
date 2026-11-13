@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>知识库与规范问答 · 无人机工地巡视智能识别系统</title>
+<meta name="description" content="法规标准、企业制度、隐患案例与报告模板四库，知识问答 Worker 强制引用来源。">
+<link rel="stylesheet" href="prototype.css">
+<style>
+  .chat-panel{display:flex;flex-direction:column;height:100%;min-height:560px}
+  .chat-scroll{flex:1;overflow-y:auto;padding:14px;max-height:520px}
+  .chat-foot{padding:10px 12px;border-top:1px solid var(--line);background:var(--surface-2)}
+  .kb-row{padding:9px 0;border-bottom:1px solid #EFEDE6}
+  .kb-row:last-child{border-bottom:0}
+  .kb-row .kb-top{display:flex;align-items:center;gap:7px}
+  .kb-row .kb-top b{font-size:11px;font-weight:600}
+  .kb-row .kb-top span{margin-left:auto;font-family:var(--font-num);font-size:12px;color:var(--ink-2)}
+  .kb-row .progress{margin-top:5px}
+  .kb-row .kb-sub{font-size:9px;color:var(--muted-2);margin-top:3px}
+  .hit{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid #EFEDE6;font-size:10px}
+  .hit:last-child{border-bottom:0}
+  .hit .h-score{font-family:var(--font-mono);font-size:9px;color:var(--teal);flex:none;width:34px;padding-top:2px}
+  .hit .h-body{min-width:0}
+  .hit b{display:block;font-size:10.5px;font-weight:600}
+  .hit span{display:block;color:var(--muted-2);line-height:1.5;margin-top:1px}
+</style>
+</head>
+<body class="app" data-role="supervisor">
+
+<aside class="sidebar">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
+        <path d="M8.4 8.4 5 5M15.6 8.4 19 5M8.4 15.6 5 19M15.6 15.6 19 19"/>
+        <rect x="8.6" y="8.6" width="6.8" height="6.8" rx="1.1"/>
+        <circle cx="4.6" cy="4.6" r="1.5"/><circle cx="19.4" cy="4.6" r="1.5"/>
+        <circle cx="4.6" cy="19.4" r="1.5"/><circle cx="19.4" cy="19.4" r="1.5"/>
+      </svg>
+    </span>
+    <span class="brand-text"><strong>无人机巡视智能体</strong><span>UAV INSPECTION OS · V4.0</span></span>
+  </a>
+  <div class="project-switch">
+    <span class="ps-icon"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 5.5 8 2l6 3.5v5L8 14l-6-3.5z"/><path d="M2 5.5 8 9l6-3.5M8 9v5"/></svg></span>
+    <span class="ps-text"><b>S32 公路改扩建工程</b><span>03 标段 · K12+200—K17+200</span></span>
+    <span class="ps-caret">▼</span>
+  </div>
+  <nav class="nav">
+    <div class="nav-label">巡视作业</div>
+    <a class="nav-item" id="nav-command" href="web-command-center.html"><span class="no">01</span>全域指挥台</a>
+    <a class="nav-item" id="nav-plan" href="web-mission-plan.html"><span class="no">02</span>任务与航线编排</a>
+    <a class="nav-item" id="nav-detail" href="web-mission-detail.html"><span class="no">03</span>飞行回放与影像</a>
+    <a class="nav-item" id="nav-review" href="web-hazard-review.html"><span class="no">04</span>AI 隐患复核<span class="nav-dot"></span></a>
+    <div class="nav-label">闭环与报告</div>
+    <a class="nav-item" id="nav-process" href="web-process-monitor.html"><span class="no">05</span>流程运行台<span class="nav-dot"></span></a>
+    <a class="nav-item" id="nav-closure" href="web-hazard-closure.html"><span class="no">06</span>整改闭环</a>
+    <a class="nav-item" id="nav-reports" href="web-reports.html"><span class="no">07</span>报告中心</a>
+    <div class="nav-label">智能支撑</div>
+    <a class="nav-item" id="nav-knowledge" href="web-knowledge.html"><span class="no">08</span>知识库与问答</a>
+    <a class="nav-item" id="nav-admin" href="web-admin.html"><span class="no">09</span>平台管理</a>
+  </nav>
+  <div class="side-foot">
+    <div class="sys-state"><span class="pulse"></span>Supervisor 正常 · 队列 0 积压</div>
+    <div class="side-user"><span class="avatar">陈</span><div><b>陈立群</b><span>监理工程师 · 03 标段</span></div></div>
+  </div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div class="crumb"><a href="index.html">原型总览</a><span class="sep">/</span><span>智能支撑</span><span class="sep">/</span><b>知识库与规范问答</b></div>
+    <div class="topbar-right">
+      <label class="search"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="7" r="4.4"/><path d="m10.5 10.5 3 3"/></svg><input placeholder="搜索规范、条款、案例"><kbd>⌘K</kbd></label>
+      <div class="role-switch"><button data-role-btn="supervisor" class="is-on">监理</button><button data-role-btn="owner">建设</button><button data-role-btn="builder">施工</button></div>
+      <button class="icon-btn" aria-label="通知"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 2a3.5 3.5 0 0 1 3.5 3.5c0 3 1.2 4 1.2 4H3.3s1.2-1 1.2-4A3.5 3.5 0 0 1 8 2Z"/><path d="M6.6 12a1.5 1.5 0 0 0 2.8 0"/></svg><span class="dot"></span></button>
+      <span class="avatar">陈</span>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="page-head">
+      <div class="page-head-main">
+        <div class="kicker">QA Worker · RAG · 强制引用 · 无依据拒答</div>
+        <h1>知识库与规范问答</h1>
+        <div class="sub">
+          <span>四库已就绪</span><span class="dot"></span>
+          <span>覆盖核心安全规范 <b>23</b> 部</span><span class="dot"></span>
+          <span>最近索引更新 <b class="mono">11-07 06:30</b></span>
+        </div>
+      </div>
+      <div class="page-actions">
+        <button class="btn" data-toast="已提交索引重建，预计 4 分钟完成，期间问答服务不中断。">重建索引</button>
+        <button class="btn btn-primary" data-modal="kbModal">新增知识条目</button>
+      </div>
+    </div>
+
+    <section class="metrics" aria-label="知识库指标">
+      <div class="metric">
+        <div class="metric-label">法规标准库</div>
+        <div class="metric-value"><b>1,284</b><span class="unit">条</span></div>
+        <div class="metric-delta"><span>23 部规范 · 全员可见</span></div>
+        <svg class="spark" viewBox="0 0 56 22"><rect x="2" y="12" width="4" height="8"/><rect x="10" y="10" width="4" height="10"/><rect x="18" y="11" width="4" height="9"/><rect x="26" y="8" width="4" height="12"/><rect x="34" y="7" width="4" height="13"/><rect x="42" y="5" width="4" height="15"/><rect x="50" y="4" width="4" height="16" class="on"/></svg>
+      </div>
+      <div class="metric">
+        <div class="metric-label">企业制度库</div>
+        <div class="metric-value"><b>386</b><span class="unit">条</span></div>
+        <div class="metric-delta"><span>集团 / 项目两级制度</span></div>
+        <svg class="spark" viewBox="0 0 56 22"><rect x="2" y="13" width="4" height="7"/><rect x="10" y="11" width="4" height="9"/><rect x="18" y="10" width="4" height="10"/><rect x="26" y="8" width="4" height="12"/><rect x="34" y="9" width="4" height="11"/><rect x="42" y="6" width="4" height="14"/><rect x="50" y="5" width="4" height="15" class="on"/></svg>
+      </div>
+      <div class="metric">
+        <div class="metric-label">隐患案例库</div>
+        <div class="metric-value"><b>2,140</b><span class="unit">条</span></div>
+        <div class="metric-delta"><span class="up">+18</span><span>本周新增 · 按项目隔离</span></div>
+        <svg class="spark" viewBox="0 0 56 22"><rect x="2" y="9" width="4" height="11"/><rect x="10" y="11" width="4" height="9"/><rect x="18" y="7" width="4" height="13"/><rect x="26" y="8" width="4" height="12"/><rect x="34" y="6" width="4" height="14"/><rect x="42" y="4" width="4" height="16"/><rect x="50" y="3" width="4" height="17" class="on"/></svg>
+      </div>
+      <div class="metric">
+        <div class="metric-label">报告模板库</div>
+        <div class="metric-value"><b>42</b><span class="unit">套</span></div>
+        <div class="metric-delta"><span>日报 / 周报 / 专项 / 工程量</span></div>
+        <svg class="spark" viewBox="0 0 56 22"><rect x="2" y="14" width="4" height="6"/><rect x="10" y="13" width="4" height="7"/><rect x="18" y="11" width="4" height="9"/><rect x="26" y="12" width="4" height="8"/><rect x="34" y="9" width="4" height="11"/><rect x="42" y="7" width="4" height="13"/><rect x="50" y="6" width="4" height="14" class="on"/></svg>
+      </div>
+      <div class="metric alt">
+        <div class="metric-label">问答准确率</div>
+        <div class="metric-value"><b>92.4</b><span class="unit">%</span></div>
+        <div class="metric-delta"><span class="up">拒答准确率 96.1%</span><span>近 30 天</span></div>
+        <svg class="spark" viewBox="0 0 56 22"><rect x="2" y="12" width="4" height="8"/><rect x="10" y="10" width="4" height="10"/><rect x="18" y="11" width="4" height="9"/><rect x="26" y="8" width="4" height="12"/><rect x="34" y="7" width="4" height="13"/><rect x="42" y="6" width="4" height="14"/><rect x="50" y="4" width="4" height="16" class="on"/></svg>
+      </div>
+    </section>
+
+    <div class="grid mt-14">
+      <section class="panel flush span-7">
+        <div class="panel-head">
+          <div class="panel-title">规范问答 <span class="panel-sub">会话 QA-20261107-018</span></div>
+          <span class="badge badge-closed"><i></i>知识库在线</span>
+          <div class="panel-tools"><button class="btn btn-sm" data-toast="已新建会话，上下文已隔离。">新会话</button></div>
+        </div>
+        <div class="chat-panel">
+          <div class="chat-scroll" data-chat-list>
+            <div class="chat">
+              <div class="msg user">
+                <div class="m-ava">陈</div>
+                <div class="m-body">
+                  <div class="m-name">我 · 监理工程师</div>
+                  <div class="bubble"><p>深基坑临边防护栏杆高度不够，按什么标准判定为重大隐患？</p></div>
+                </div>
+              </div>
+              <div class="msg">
+                <div class="m-ava">AI</div>
+                <div class="m-body">
+                  <div class="m-name">知识问答 Worker · Qwen-Plus <span class="tag tag-teal">已引用 2 条</span></div>
+                  <div class="bubble">
+                    <p>按企业《隐患分级标准（2026 版）》第 3.2 条，深基坑临边防护同时满足以下情形时判定为<b>重大隐患</b>：</p>
+                    <ul>
+                      <li>防护栏杆缺失、高度不足或立杆间距超标；</li>
+                      <li>基坑深度 ≥3 m，或作业面有人活动；</li>
+                      <li>未设置挡脚板、密目网等防坠落措施。</li>
+                    </ul>
+                    <p>规范要求上杆高度不低于 <b>1.2 m</b>、立杆间距不大于 <b>2 m</b>，并设置中杆与挡脚板。现场仅设一道横杆或高度不足 1.0 m 的，应按重大隐患处置。</p>
+                    <div class="refs">
+                      <span class="tag tag-brand">企业隐患分级标准 §3.2</span>
+                      <span class="tag tag-brand">JTG F90-2015 §4.3.7</span>
+                      <span class="tag tag-blue">检索 4 部规范 / 12 条案例</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="msg user">
+                <div class="m-ava">陈</div>
+                <div class="m-body">
+                  <div class="m-name">我 · 监理工程师</div>
+                  <div class="bubble"><p>施工方说已经拆了重装，复核时重点看哪些点？</p></div>
+                </div>
+              </div>
+              <div class="msg">
+                <div class="m-ava">AI</div>
+                <div class="m-body">
+                  <div class="m-name">知识问答 Worker · 检索 3 条案例</div>
+                  <div class="bubble">
+                    <p>复核建议按“尺寸—固定—防护—堆载”四项核对，并要求提供整改前后同桩号影像：</p>
+                    <ul>
+                      <li>上杆 1.2 m、中杆 0.6 m、挡脚板 ≥180 mm；立杆间距 ≤2 m；</li>
+                      <li>立杆底部固定牢固，转角、端头封闭，不得用铁丝临时绑扎；</li>
+                      <li>密目网完整、无破损，夜间反光标识齐全；</li>
+                      <li>坑边 1.5 m 内无堆土与材料，排水沟畅通。</li>
+                    </ul>
+                    <p>若栏杆曾被擅自拆除，应同时核查班组交底记录与停用期间的警戒措施。</p>
+                    <div class="refs"><span class="tag tag-brand">JGJ 80-2016 §4.1.2</span><span class="tag tag-brand">企业监理细则 §5.4</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="chat-foot">
+            <div class="row wrap" style="gap:6px;margin-bottom:8px">
+              <button class="tag tag-brand" style="cursor:pointer;height:22px" data-ask="脚手架连墙件缺失如何判定？">脚手架连墙件缺失如何判定？</button>
+              <button class="tag" style="cursor:pointer;height:22px" data-ask="裸土覆盖的整改标准是什么？">裸土覆盖整改标准</button>
+              <button class="tag" style="cursor:pointer;height:22px" data-ask="有限空间作业审批流程是什么？">有限空间作业审批</button>
+            </div>
+            <form class="composer" data-chat>
+              <input placeholder="描述隐患场景、构件类型或直接输入规范问题…" aria-label="输入问题">
+              <button class="btn btn-primary btn-sm" type="submit">发送</button>
+            </form>
+            <div class="tiny muted-2 mt-6">回答仅基于知识库检索结果，强制标注来源；无依据时明确拒答并建议转人工专家。</div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="col span-5">
+        <section class="panel">
+          <div class="panel-head tight"><div class="panel-title">知识库构成</div><span class="small muted-2">向量 + BM25</span></div>
+          <div class="panel-body tight">
+            <div class="kb-row">
+              <div class="kb-top"><span class="tag tag-brand">法规</span><b>法规标准库</b><span>1,284</span></div>
+              <div class="progress"><i style="width:92%"></i></div>
+              <div class="kb-sub">23 部规范 · 按条款分块 · 3,860 chunks</div>
+            </div>
+            <div class="kb-row">
+              <div class="kb-top"><span class="tag tag-blue">制度</span><b>企业制度库</b><span>386</span></div>
+              <div class="progress"><i style="width:64%"></i></div>
+              <div class="kb-sub">集团 / 项目两级 · 按小节分块 · 1,120 chunks</div>
+            </div>
+            <div class="kb-row">
+              <div class="kb-top"><span class="tag tag-teal">案例</span><b>隐患案例库</b><span>2,140</span></div>
+              <div class="progress teal"><i style="width:78%"></i></div>
+              <div class="kb-sub">按项目隔离 · 完整案例分块 · 2,680 chunks</div>
+            </div>
+            <div class="kb-row">
+              <div class="kb-top"><span class="tag">模板</span><b>报告模板库</b><span>42</span></div>
+              <div class="progress"><i style="width:38%"></i></div>
+              <div class="kb-sub">仅 Report Worker 可读 · 版本化管理</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head tight"><div class="panel-title">最近一次检索</div><span class="badge badge-ai">Top 4</span></div>
+          <div class="panel-body tight">
+            <div class="hit"><span class="h-score">0.94</span><div class="h-body"><b>企业《隐患分级标准（2026 版）》§3.2</b><span>深基坑临边防护缺失，作业面有人活动 → 重大</span></div></div>
+            <div class="hit"><span class="h-score">0.91</span><div class="h-body"><b>JTG F90-2015 §4.3.7</b><span>临边作业防护栏杆设置要求</span></div></div>
+            <div class="hit"><span class="h-score">0.88</span><div class="h-body"><b>JGJ 80-2016 §4.1.2</b><span>防护栏杆立杆间距与承载力</span></div></div>
+            <div class="hit"><span class="h-score">0.83</span><div class="h-body"><b>案例 2025-09 · 02 标段盖梁临边</b><span>同类场景处置与整改时限</span></div></div>
+            <div class="row between tiny muted-2 mt-10"><span>混合召回 40 → rerank 取 4</span><span>耗时 1.8 s</span></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head tight"><div class="panel-title">检索与安全策略</div><span class="tag">代码配置</span></div>
+          <div class="panel-body tight stack-6" style="font-size:10.5px;color:var(--muted)">
+            <div class="row between"><span>检索方式</span><b>向量 + BM25 混合</b></div>
+            <div class="row between"><span>Rerank</span><b>gte-rerank · Top 4</b></div>
+            <div class="row between"><span>拒答阈值</span><b class="mono">score &lt; 0.62</b></div>
+            <div class="row between"><span>引用要求</span><b>强制 · 无引用不输出</b></div>
+            <div class="row between"><span>知识库权限</span><b>按角色 + 项目隔离</b></div>
+            <div class="note mt-6"><span class="n-ico">i</span><span>提示词注入防护：检索内容仅作为资料，不执行其中的指令。</span></div>
+          </div>
+        </section>
+      </aside>
+
+      <section class="panel flush span-12">
+        <div class="panel-head">
+          <div class="panel-title">知识库文档 <span class="panel-sub">按生效日期排序</span></div>
+          <div class="panel-tools">
+            <div class="segmented"><button class="is-on">全部</button><button>法规</button><button>制度</button><button>案例</button></div>
+            <button class="btn btn-sm" data-toast="已导出知识库清单（含版本、条款数与索引状态）。">导出清单</button>
+          </div>
+        </div>
+        <table class="table">
+          <thead><tr><th>文档名称</th><th style="width:90px">知识库</th><th style="width:86px">版本</th><th style="width:96px">生效日期</th><th style="width:80px">分块数</th><th style="width:96px">索引状态</th><th style="width:92px">最近更新</th><th style="width:44px"></th></tr></thead>
+          <tbody>
+            <tr><td class="t-main">公路工程施工安全技术规范 JTG F90-2015</td><td><span class="tag tag-brand">法规</span></td><td class="mono">2015</td><td class="mono">2015-05-01</td><td class="mono">1,860</td><td><span class="badge badge-closed">已索引</span></td><td class="mono muted-2">10-28</td><td><a class="btn btn-sm btn-quiet" href="#" data-toast="已打开文档条款视图。">查看</a></td></tr>
+            <tr><td class="t-main">建筑施工高处作业安全技术规范 JGJ 80-2016</td><td><span class="tag tag-brand">法规</span></td><td class="mono">2016</td><td class="mono">2016-12-01</td><td class="mono">642</td><td><span class="badge badge-closed">已索引</span></td><td class="mono muted-2">10-28</td><td><a class="btn btn-sm btn-quiet" href="#" data-toast="已打开文档条款视图。">查看</a></td></tr>
+            <tr><td class="t-main">集团安全隐患分级标准（2026 版）</td><td><span class="tag tag-blue">制度</span></td><td class="mono">2026.1</td><td class="mono">2026-01-01</td><td class="mono">186</td><td><span class="badge badge-closed">已索引</span></td><td class="mono muted-2">11-06</td><td><a class="btn btn-sm btn-quiet" href="#" data-toast="已打开文档条款视图。">查看</a></td></tr>
+            <tr><td class="t-main">03 标段监理实施细则</td><td><span class="tag tag-blue">制度</span></td><td class="mono">V2.1</td><td class="mono">2026-03-15</td><td class="mono">248</td><td><span class="badge badge-closed">已索引</span></td><td class="mono muted-2">11-05</td><td><a class="btn btn-sm btn-quiet" href="#" data-toast="已打开文档条款视图。">查看</a></td></tr>
+            <tr><td class="t-main">2025-09 盖梁临边防护缺失案例复盘</td><td><span class="tag tag-teal">案例</span></td><td class="mono">V1.0</td><td class="mono">2025-09-30</td><td class="mono">12</td><td><span class="badge badge-closed">已索引</span></td><td class="mono muted-2">10-21</td><td><a class="btn btn-sm btn-quiet" href="#" data-toast="已打开案例详情。">查看</a></td></tr>
+            <tr><td class="t-main">公路水运工程安全生产监督管理办法</td><td><span class="tag tag-brand">法规</span></td><td class="mono">2017</td><td class="mono">2017-12-01</td><td class="mono">96</td><td><span class="badge badge-pending">待复核</span></td><td class="mono muted-2">11-07</td><td><a class="btn btn-sm btn-quiet" href="#" data-toast="该文档新版本待业务专家复核后生效。">查看</a></td></tr>
+          </tbody>
+        </table>
+        <div class="panel-foot"><span>规范版本保留历史，季度审核；更新需业务专家确认后重建索引。</span><a class="link-quiet" style="margin-left:auto" href="#" data-toast="已进入知识库更新审批流程。">提交更新</a></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="modal-mask" id="kbModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div><h3>新增知识条目</h3><p>上传文档或录入案例，经审核后进入索引。</p></div>
+      <button class="x" data-close aria-label="关闭">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field"><label>知识库</label><select class="select"><option>企业制度库</option><option>法规标准库</option><option>隐患案例库</option><option>报告模板库</option></select></div>
+        <div class="field"><label>文档类型</label><select class="select"><option>PDF</option><option>Word</option><option>网页链接</option><option>手工录入</option></select></div>
+        <div class="field span2"><label>标题 <span class="req">*</span></label><input class="input" placeholder="例如：03 标段临时用电管理办法"></div>
+        <div class="field"><label>生效日期</label><input class="input" value="2026-11-07"></div>
+        <div class="field"><label>密级</label><select class="select"><option>内部</option><option>公开</option><option>核心</option></select></div>
+      </div>
+      <div class="note mt-14"><span class="n-ico">i</span><span>上传后先进入“待复核”，由业务专家确认条款切分与元数据，再触发向量化。</span></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-primary" data-close data-toast="知识条目已提交审核，审核通过后自动重建索引。">提交审核</button>
+    </div>
+  </div>
+</div>
+
+<script src="prototype.js"></script>
+</body>
+</html>
